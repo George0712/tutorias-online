@@ -1,0 +1,48 @@
+Título del Proyecto: Plataforma de Tutorías en Línea
+Resumen:
+El proyecto consistirá en desarrollar una Plataforma de Tutorías en Línea utilizando Cualquier tecnologia. 
+Esta plataforma estará diseñada para conectar a estudiantes con tutores calificados 
+en diferentes materias y niveles educativos. 
+Los estudiantes podrán buscar y reservar sesiones de tutoría, 
+mientras que los tutores podrán gestionar su disponibilidad y proporcionar 
+sesiones de tutoría a través de videoconferencias integradas.
+
+Objetivos del Proyecto:
+Desarrollar una aplicación web y móvil que permita a los usuarios acceder a la plataforma desde cualquier dispositivo.
+Implementar una API RESTful utilizando Web API para la lógica del servidor y la comunicación entre la aplicación web y móvil.
+Permitir a los estudiantes buscar tutores por materia, nivel educativo y disponibilidad.
+Permitir a los estudiantes reservar sesiones de tutoría con tutores disponibles.
+Permitir a los tutores gestionar su disponibilidad, ver y aceptar solicitudes de tutoría.
+Integrar funcionalidades de videoconferencia para las sesiones de tutoría.
+Garantizar la seguridad de los datos y la autenticación de usuarios utilizando técnicas modernas de seguridad.
+
+Reglas del Negocio:
+Registro de Usuarios: Los estudiantes y los tutores podrán registrarse en la plataforma proporcionando información personal y credenciales de inicio de sesión.
+Búsqueda de Tutores: Los estudiantes podrán buscar tutores por materia, nivel educativo y disponibilidad.
+Reserva de Sesiones de Tutoría: Los estudiantes podrán reservar sesiones de tutoría con los tutores disponibles según su horario.
+Gestión de Disponibilidad: Los tutores podrán establecer su disponibilidad y aceptar o rechazar solicitudes de tutoría.
+Videoconferencia Integrada: Las sesiones de tutoría se llevarán a cabo a través de una funcionalidad de videoconferencia integrada en la plataforma.
+
+Alcance del Proyecto:
+El alcance del proyecto incluirá las siguientes características principales:
+
+Registro e inicio de sesión de usuarios (estudiantes y tutores).
+Búsqueda de tutores por materia, nivel educativo y disponibilidad.
+Reserva de sesiones de tutoría por parte de los estudiantes.
+Gestión de disponibilidad y solicitudes de tutoría por parte de los tutores.
+Integración de funcionalidades de videoconferencia para las sesiones de tutoría(opcional).
+Reserva de tutores en tiempo real tipo (uber, rappi, etc..) por parte de los estudiantes.
+Diseño y desarrollo de interfaces de usuario intuitivas y atractivas.
+
+Entregables:
+- codigo de la aplicacion en versiones (web y movil)
+- aplicar buenas practicas y principios SOLID en todo el proyecto
+- aplicar algun tipo de arquitectura de software
+- crear una propuesta de  proyecto comercial que tengo estimacion de tiempo y costos
+- manual del usuario
+- manual del sistema
+- diseño de interfaces graficas de usuario tanto para la version web como para la version movil
+- diseño de base de datos Relacional y/o No relacional
+- sustentacion del proyecto en vivo
+
+
