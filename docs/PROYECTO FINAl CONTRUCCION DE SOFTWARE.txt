@@ -46,3 +46,54 @@ Entregables:
 - sustentacion del proyecto en vivo
 
 
+Tecnologías y Herramientas:
+Frontend: Angular 19.
+Backend: Django.
+Base de Datos: PostgreSQL.
+Autenticación: JWT / OAuth.
+Videoconferencias: WebRTC / Zoom SDK.
+Control de Versiones: GitHub.
+Diseño UI/UX: Figma.
+
+
+Roles y Responsabilidades:
+Líder del Proyecto: Coordinación y seguimiento.
+Desarrollador Frontend: Diseño e implementación de interfaces.
+Desarrollador Backend: Desarrollo de lógica del servidor y API.
+Especialista en Base de Datos: Diseño y gestión de BD.
+QA y Testing: Pruebas y aseguramiento de calidad.
+Gestor de Documentación: Redacción de manuales y propuestas.
+
+
+Cronograma:
+Semana 1:
+- Definición de requerimientos funcionales y no funcionales.
+- Revisión de tecnologías y herramientas a utilizar.
+- Creación del repositorio en GitHub y configuración inicial.
+
+Semana 2:
+- Diseño de wireframes y prototipos en Figma.
+- Creación del modelo de datos y estructura de la base de datos.
+- Configuración del entorno de desarrollo.
+
+Semana 3-4:
+- Desarrollo del backend: implementación de API RESTful.
+- Desarrollo del frontend: estructura básica y diseño de interfaces.
+- Implementación de autenticación y autorización.
+
+Semana 5-6:
+- Integración de funcionalidades de búsqueda y reserva de sesiones.
+- Implementación de la gestión de disponibilidad de los tutores.
+- Desarrollo de paneles de administración para estudiantes y tutores.
+
+Semana 7:
+- Integración de videoconferencia en la plataforma.
+- Optimización de la seguridad y pruebas de carga en el sistema.
+
+Semana 8:
+- Pruebas funcionales y corrección de errores.
+- Redacción de manuales de usuario y documentación técnica.
+
+Semana 9:
+- Presentación del proyecto.
+- Implementación de mejoras finales y despliegue inicial.
