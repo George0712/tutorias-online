@@ -23,11 +23,11 @@ El proyecto se dividirá en las siguientes secciones:
 - *Frontend:* Angular 19
 - *Backend:* Django
 - *Base de Datos:* PostgreSQL
-- *Autenticación:* OAuth
-- *Videoconferencias:* Zoom SDK
+- *Autenticación:* JWT, OAuth
+- *Videoconferencias:* Zoom SDK, jitsi SDK
 - *Control de Versiones:* GitHub
 - *Diseño UI/UX:* Figma
 
 ## Arquitectura del proyecto
-La arquitectura del proyecto se basa en un patrón de Modelo-Vista-Controlador (MVC), Organizando los componentes en 3 capas principales Frontend, Backend y Base de Datos. Donde el frontend se encarga de la interfaz de usuario, consumo de APIs y autenticación con OAuth, mientras que el backend gestiona la lógica de negocio, la API REST y la integración con Zoom SDK para videoconferencias. La base de datos almacena información de usuarios, tutorías y pagos.
+La arquitectura del proyecto se basa en Cliente-Servidor. Organizando los componentes en 3 capas principales Frontend, Backend y Base de Datos. Donde el frontend se encarga de la interfaz de usuario, consumo de APIs y autenticación con OAuth, mientras que el backend gestiona la lógica de negocio, la API REST y la integración con Zoom SDK para videoconferencias. La base de datos almacena información de usuarios, tutorías y pagos.
 
