@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Quicksand:wght@300..700&display=swap');
+
+span {
+    font-size: 24px;
+}
+
+.tutor-footer {
+  font-family:  "Quicksand", serif;
+}
+
+.hub-footer {
+    font-family: "Open sans", serif !important;
+    color: #A62639;
+}
