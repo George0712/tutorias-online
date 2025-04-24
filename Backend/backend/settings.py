@@ -21,8 +21,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Apps del proyecto
-    'backend',  # Asegúrate de incluir tu app aquí
+    'rest_framework',
+    'backend',
+    'users',
+    'education',
+    'availability',
+    'booking',
+    'reviews',
+    'rest_framework.authtoken'
 ]
 
 # Middleware
@@ -65,7 +71,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'tutorias_db',  # Nombre de la base de datos
         'USER': 'postgres',  # Reemplaza con el usuario correcto de PostgreSQL
-        'PASSWORD': 'hola123_',  # Reemplaza con tu contraseña
+        'PASSWORD': 'tucontrasena',  # Reemplaza con tu contraseña
         'HOST': 'localhost',  # Si estás trabajando localmente
         'PORT': '5432',  # Puerto predeterminado de PostgreSQL
     }
@@ -97,3 +103,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Primary Key por defecto
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'users.User'
