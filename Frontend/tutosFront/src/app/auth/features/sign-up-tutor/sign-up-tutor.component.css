@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
-.form-login {
+.form-signup {
     padding-top: 30px;
     padding-bottom: 30px;
     border-top: 0px;
@@ -17,29 +17,23 @@ form input {
     border-color: #7A757F;
 }
 
-.btnLogin {
+.btnsignup {
     background-color: #A62639;
     border-radius: 100px;
     font-family: "Quicksand", serif;
 }
 
-.btnLogin:hover {
+.btnsignup:hover {
     background-color: #511C29;
     cursor: pointer;
 }
 
-#forgot-password {
+
+#sign-in-btn {
     color: #511C29;
 }
 
-#forgot-password a:hover {
+#sign-in-btn:hover {
     color: #A62639;
 }
 
-#sign-up-btn {
-    color: #511C29;
-}
-
-#sign-up-btn:hover {
-    color: #A62639;
-}

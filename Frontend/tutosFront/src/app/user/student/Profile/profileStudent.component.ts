@@ -7,7 +7,7 @@ import { FormControl, FormGroup } from '@angular/forms';
   templateUrl: './profileStudent.component.html',
   styleUrl: './profileStudent.component.css'
 })
-export class ProfileStudentComponent {
+export default class ProfileStudentComponent {
   profileStudentForm = new FormGroup({
     name: new FormControl(''),
     lastName: new FormControl(''),

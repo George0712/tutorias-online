@@ -7,7 +7,7 @@ import { FormControl, FormGroup} from '@angular/forms';
   templateUrl: './profileTutor.component.html',
   styleUrl: './profileTutor.component.css'
 })
-export class ProfileTutorComponent {
+export default class ProfileTutorComponent {
   profileTutorForm = new FormGroup({
     name : new FormControl(''),
     lastName : new FormControl(''),
