@@ -80,6 +80,11 @@ TEMPLATES = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 # Configuración WSGI
 WSGI_APPLICATION = 'backend.wsgi.application'
 
@@ -89,7 +94,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'tutorias_db',  # Nombre de la base de datos
         'USER': 'postgres',  # Reemplaza con el usuario correcto de PostgreSQL
-        'PASSWORD': '0712',  # Reemplaza con tu contraseña
+        'PASSWORD': 'tucontra',  # Reemplaza con tu contraseña
         'HOST': 'localhost',  # Si estás trabajando localmente
         'PORT': '5432',  # Puerto predeterminado de PostgreSQL
     }
