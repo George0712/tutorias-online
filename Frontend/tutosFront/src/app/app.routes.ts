@@ -7,12 +7,12 @@ export const routes: Routes = [
   ...UserRoutes,
   {
     path: '',
-    redirectTo: 'auth/login',
+    redirectTo: 'auth/visitor',
     pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: 'auth/login',
+    redirectTo: 'auth/visitor',
   },
 ];
 
