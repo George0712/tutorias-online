@@ -28,11 +28,13 @@ INSTALLED_APPS = [
     'availability',
     'booking',
     'reviews',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'corsheaders'
 ]
 
 # Middleware
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -41,7 +43,20 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:4200/',
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
 # Configuración de URLs
 ROOT_URLCONF = 'backend.urls'
 
@@ -76,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'tutorias_db',  # Nombre de la base de datos
         'USER': 'postgres',  # Reemplaza con el usuario correcto de PostgreSQL
-        'PASSWORD': 'tucontra',  # Reemplaza con tu contraseña
+        'PASSWORD': 'hdz',  # Reemplaza con tu contraseña
         'HOST': 'localhost',  # Si estás trabajando localmente
         'PORT': '5432',  # Puerto predeterminado de PostgreSQL
     }
