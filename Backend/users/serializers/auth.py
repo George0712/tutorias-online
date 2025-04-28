@@ -28,27 +28,25 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return user
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    email    = serializers.EmailField()
     password = serializers.CharField(write_only=True)
-    token = serializers.CharField(read_only=True)
+    token    = serializers.CharField(read_only=True)
+    role     = serializers.CharField(read_only=True)  # nuevo campo
 
     def validate(self, data):
-        
-        email = data.get('email')
+        email    = data.get('email')
         password = data.get('password')
 
-        # Aquí cambiamos a __iexact para buscar sin distinguir mayúsculas
         user = User.objects.filter(email__iexact=email).first()
-
         if user is None or not user.check_password(password):
-            # devolvemos el error por campo, en lugar de non_field_errors
             raise serializers.ValidationError({
-                'email': ['Credenciales inválidas.'],
+                'email':    ['Credenciales inválidas.'],
                 'password': ['Credenciales inválidas.']
             })
 
         token, _ = Token.objects.get_or_create(user=user)
         return {
             'email': user.email,
-            'token': token.key
+            'token': token.key,
+            'role':  user.role,             # añadimos el role aquí
         }

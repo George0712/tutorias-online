@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
-  private apiUrl = "http://127.0.0.1:8000/api/auth/"; 
+  private apiUrl = "http://127.0.0.1:8000/api/user/"; 
 
   constructor(private http: HttpClient) {}
 
@@ -52,5 +52,4 @@ export class AuthService {
     const token = this.getToken();
     return token !== null;
   }
-
 }

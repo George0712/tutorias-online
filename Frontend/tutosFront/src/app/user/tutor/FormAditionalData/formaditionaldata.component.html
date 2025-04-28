@@ -1,1 +1,96 @@
-<p>formaditionaldata works!</p>
+<Section>
+    <div class="min-h-screen flex flex-col items-center justify-center bg-white px-6 py-8">
+        <div class="w-full max-w-6xl bg-white rounded-2xl shadow-md p-12">
+          
+          <!-- Título -->
+          <div class="flex flex-col items-lefs mb-18">
+            <h1 class="text-2xl md:text-3xl font-bold text-center font-quicksand text-gray-900 mb-6">
+              COMPLETA TU INFORMACIÓN ADICIONAL
+            </h1>
+          </div>
+      
+          <form [formGroup]="profileAdicionalTutorForm" (ngSubmit)="onSubmit()" class="w-full">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-90">
+              
+              <!-- Columna izquierda -->
+              <div class="flex flex-col gap-10">
+                <!-- Acerca de ti -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Acerca de ti</label>
+                  <textarea formControlName="aboutYou" 
+                    class="w-140 p-3 border border-[#A62639] rounded-2xl focus:outline-none" 
+                    rows="5"
+                    [class.border-red-500]="f['aboutYou'].touched && f['aboutYou'].errors"></textarea>
+                  <div *ngIf="f['aboutYou'].touched && f['aboutYou'].errors" class="text-red-500 text-xs mt-1">
+                    <div *ngIf="f['aboutYou'].errors?.['required']">Este campo es requerido</div>
+                    <div *ngIf="f['aboutYou'].errors?.['minlength']">Mínimo 20 caracteres</div>
+                    <div *ngIf="f['aboutYou'].errors?.['maxlength']">Máximo 500 caracteres</div>
+                  </div>
+                </div>
+      
+                <!-- Tarifa por hora -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Tarifa por hora</label>
+                  <div class="relative">
+                    <span class="absolute left-3 top-3">$</span>
+                    <input type="text" formControlName="hourlyRate" 
+                      class="w-100 pl-8 p-3 border border-[#A62639] rounded-2xl focus:outline-none"
+                      [class.border-red-500]="f['hourlyRate'].touched && f['hourlyRate'].errors">
+                  </div>
+                  <div *ngIf="f['hourlyRate'].touched && f['hourlyRate'].errors" class="text-red-500 text-xs mt-1">
+                    <div *ngIf="f['hourlyRate'].errors?.['required']">La tarifa es requerida</div>
+                    <div *ngIf="f['hourlyRate'].errors?.['pattern']">Formato inválido (ej. 20 o 20.50)</div>
+                    <div *ngIf="f['hourlyRate'].errors?.['min']">La tarifa mínima es $5</div>
+                  </div>
+                </div>
+      
+                <!-- Idiomas -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Idiomas</label>
+                  <button type="button" 
+                    class="bg-[#A62639] text-white w-80 py-3 rounded-2xl font-quicksand hover:bg-[#511C29] transition"  
+                    routerLink="/auth/idioma/tutor">
+                    Agregar idioma
+                  </button>
+                </div>
+              </div>
+      
+              <!-- Columna derecha -->
+              <div class="flex flex-col gap-30 justify-start">
+                <!-- Educación -->
+                <div class="mt-1">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Educación</label>
+                  <button type="button" 
+                    class="bg-[#A62639] text-white w-80 py-3 rounded-2xl font-quicksand hover:bg-[#511C29] transition"  
+                    routerLink="/auth/register/tutor">
+                    Agregar Educación
+                  </button>
+                </div>
+      
+                <!-- Habilidades y experiencia -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Habilidades y experiencia</label>
+                  <button type="button" 
+                    class="bg-[#A62639] text-white w-80 py-3 rounded-2xl font-quicksand hover:bg-[#511C29] transition" 
+                    routerLink="/auth/abi/tutor">
+                    Agregar Habilidades y experiencia
+                  </button>
+                </div>
+              </div>
+      
+            </div>
+      
+            <!-- Botón Completar -->
+            <div class="flex justify-end mt-10">
+              <button type="submit" 
+                [disabled]="isSubmitting"
+                class="bg-[#A62639] text-white px-10 py-3 rounded-2xl font-quicksand hover:bg-[#511C29] transition disabled:opacity-50">
+                <span *ngIf="!isSubmitting">Completar</span>
+                <span *ngIf="isSubmitting">Procesando...</span>
+              </button>   
+            </div>
+          </form>
+      
+        </div>
+      </div>
+</Section>
