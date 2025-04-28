@@ -61,7 +61,7 @@ export default class SignUpTutorComponent {
           this._AuthService.saveUserData(res.access, 'student');
           toast.success('Usuario registrado con éxito!');
           // redirige
-          this.router.navigate(['/details-tutor/student']);
+          this.router.navigate(['/tutor/form-personal-data']);
         },
         error: (err) => {
           console.error(err);
