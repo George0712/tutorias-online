@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from decouple import config
 
 # BASE_DIR: Directorio base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -92,11 +93,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tutorias_db',  # Nombre de la base de datos
-        'USER': 'postgres',  # Reemplaza con el usuario correcto de PostgreSQL
-        'PASSWORD': '0712',  # Reemplaza con tu contraseña
-        'HOST': 'localhost',  # Si estás trabajando localmente
-        'PORT': '5432',  # Puerto predeterminado de PostgreSQL
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', cast=int),
     }
 }
 
