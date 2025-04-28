@@ -1,8 +1,8 @@
 from rest_framework import viewsets, permissions
-from education.models import Education, Skill, Language
-from education.serializers.education import EducationSerializer
-from education.serializers.skill import SkillSerializer
-from education.serializers.language import LanguageSerializer
+from professional.models import Education, Skill, Language
+from professional.serializers.education import EducationSerializer
+from professional.serializers.skill import SkillSerializer
+from professional.serializers.language import LanguageSerializer
 from users.models import Tutor
 
 class EducationViewSet(viewsets.ModelViewSet):
