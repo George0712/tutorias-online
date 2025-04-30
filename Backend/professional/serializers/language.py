@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from education.models import Language
+from professional.models import Language
 
 class LanguageSerializer(serializers.ModelSerializer):
     class Meta:

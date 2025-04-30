@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'backend',
     'users',
-    'education',
+    'professional',
     'availability',
     'booking',
     'reviews',
