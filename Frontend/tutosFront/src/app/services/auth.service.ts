@@ -23,9 +23,17 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}register/tutor/`, { email, password });
   }
   
-  saveUserData(token: string, role: string) {
+  saveUserData(token: string, role: string, hasPersonalData?: boolean, hasProfessionalData?: boolean) {
     localStorage.setItem('token', token);
     localStorage.setItem('role', role);
+
+    if (hasPersonalData !== undefined) {
+      localStorage.setItem('hasPersonalData', String(hasPersonalData));
+    }
+
+    if (hasProfessionalData !== undefined) {
+      localStorage.setItem('hasProfessionalData', String(hasProfessionalData));
+    }
   }
 
   getRole(): string | null {
@@ -45,7 +53,7 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem('token') || '';
   }
 
   isAuthenticated(): boolean {

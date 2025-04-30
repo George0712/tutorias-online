@@ -4,8 +4,8 @@ import { FormControl, FormGroup} from '@angular/forms';
 @Component({
   selector: 'app-profile-tutor',
   imports: [],
-  templateUrl: './profileTutor.component.html',
-  styleUrl: './profileTutor.component.css'
+  templateUrl: './profile-tutor.component.html',
+  styleUrl: './profile-tutor.component.css'
 })
 export default class ProfileTutorComponent {
   profileTutorForm = new FormGroup({

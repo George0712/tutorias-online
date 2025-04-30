@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-formaditionaldata',
-  imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './formaditionaldata.component.html',
-  styleUrl: './formaditionaldata.component.css'
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, RouterOutlet],
+  templateUrl: './form-aditional-data.component.html',
+  styleUrl: './form-aditional-data.component.css'
 })
 export default class FormaditionaldataComponent {
   profileAdicionalTutorForm: FormGroup;
@@ -17,7 +17,7 @@ export default class FormaditionaldataComponent {
     this.profileAdicionalTutorForm = this.fb.group({
       aboutYou: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(500)]],
       hourlyRate: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(5)]],
-      // Los botones de agregar idioma, educación y habilidades manejarán su propia lógica
+      modality: ['', Validators.required],
     });
   }
 

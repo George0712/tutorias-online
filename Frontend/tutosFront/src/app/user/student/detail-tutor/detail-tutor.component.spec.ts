@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RequesttutoringComponent } from './requesttutoring.component';
+import { DetailtutorComponent } from './detail-tutor.component';
 
-describe('RequesttutoringComponent', () => {
-  let component: RequesttutoringComponent;
-  let fixture: ComponentFixture<RequesttutoringComponent>;
+describe('DetailtutorComponent', () => {
+  let component: DetailtutorComponent;
+  let fixture: ComponentFixture<DetailtutorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RequesttutoringComponent]
+      imports: [DetailtutorComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RequesttutoringComponent);
+    fixture = TestBed.createComponent(DetailtutorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
