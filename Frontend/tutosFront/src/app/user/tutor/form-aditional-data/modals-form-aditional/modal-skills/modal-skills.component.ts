@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../../../../services/user.service';
 
 @Component({
   selector: 'app-modal-skills',
@@ -29,7 +30,7 @@ export default class ModalSkillsComponent {
     { id: 4, name: 'Experto' }
   ];
 
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute) {
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService) {
     this.skillsForm = this.fb.group({
       habilidad: ['', Validators.required],
       nivel: ['', Validators.required]
@@ -46,36 +47,37 @@ export default class ModalSkillsComponent {
   // Manejo del envío del formulario
   onSubmit(): void {
     if (this.skillsList.length === 0) {
-      alert('Debes añadir al menos una habilidad');
-      return;
+      if (this.skillsForm.valid) {
+        this.onAdd();
+      } else {
+        this.markAllAsTouched();
+        return;
+      }
     }
 
     this.isSubmitting = true;
-    
-    // Simulación de envío a API
-    console.log('Habilidades a guardar:', this.skillsList);
-    
-    setTimeout(() => {
-      this.isSubmitting = false;
-      this.router.navigate(['/auth/register/student']);
-    }, 1500);
+    console.log('Habilidades a enviar:', this.skillsList);
+    this.userService.setSkillList(this.skillsList);
+    this.close();
   }
 
   // Método para añadir habilidades a la lista
   onAdd(): void {
-    if (this.skillsForm.invalid) {
+    if (this.skillsForm.valid) {
+      const habilidadSeleccionada = this.habilidades.find(h => h.id == this.skillsForm.value.habilidad)?.name;
+      const nivelSeleccionado = this.niveles.find(n => n.id == this.skillsForm.value.nivel)?.name;
+
+      const nuevaHabilidad = {
+        habilidad: habilidadSeleccionada,
+        nivel: nivelSeleccionado
+      };
+
+      this.skillsList.push(nuevaHabilidad);
+      this.skillsForm.reset();
+      console.log('Habilidad añadida:', nuevaHabilidad);
+    } else {
       this.markAllAsTouched();
-      return;
-    }
-
-    const newSkill = {
-      habilidad: this.habilidades.find(h => h.id == this.skillsForm.value.habilidad)?.name,
-      nivel: this.niveles.find(n => n.id == this.skillsForm.value.nivel)?.name
     };
-
-    this.skillsList.push(newSkill);
-    this.skillsForm.reset();
-    console.log('Habilidades actuales:', this.skillsList);
   }
 
   // Marcar todos los campos como touched para mostrar errores

@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toast } from 'ngx-sonner';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
@@ -12,13 +13,12 @@ import { toast } from 'ngx-sonner';
   providers: [AuthService],
 })
 export default class SignInComponent {
-
   signInForm: FormGroup;
 
   constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 
@@ -42,13 +42,13 @@ export default class SignInComponent {
           // Redirige según role
           if (role === 'student') {
             if (!hasPersonalData) {
-              this.router.navigate(['/user/student/form-personal-data']);
+              this.router.navigate(['/user/form-personal-data']);
             } else {
-              this.router.navigate(['/user/student/profile']);
+              this.router.navigate(['/user/student/home-student']);
             }
           } else if (role === 'tutor') {
             if (!hasPersonalData) {
-              this.router.navigate(['/user/tutor/form-personal-data']);
+              this.router.navigate(['/user/form-personal-data']);
             } else if (!hasProfessionalData) {
               this.router.navigate(['/user/tutor/form-aditional-data']);
             } else {

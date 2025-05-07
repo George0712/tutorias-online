@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../../../../services/user.service';
 
 @Component({
   selector: 'app-modal-education',
@@ -12,8 +13,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 export default class ModalEducationComponent {
   educationForm: FormGroup;
   isSubmitting = false;
+  educationList: any[] = [];
 
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute) {
+
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService) {
     this.educationForm = this.fb.group({
       country: ['', Validators.required],
       university: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
@@ -32,27 +35,33 @@ close() {
 
   // Manejo del envío del formulario
   onSubmit(): void {
-    if (this.educationForm.invalid) {
-      this.markAllAsTouched();
-      return;
+    if (this.educationList.length === 0) {
+      if (this.educationForm.valid) {
+        this.onAdd();
+      } else {
+        this.markAllAsTouched();
+        return;
+      }
+      this.isSubmitting = true;
+      console.log('Educacion a enviar:', this.educationList);
+      this.userService.setEducationList(this.educationList);
+      this.close();
     }
-
+  
     this.isSubmitting = true;
-    
-    // Simulación de envío a API
-    console.log('Form data:', this.educationForm.value);
-    
-    setTimeout(() => {
-      this.isSubmitting = false;
-      this.router.navigate(['/auth/register/student']);
-    }, 1500);
+  
+    // Aquí deberías llamar a tu servicio o guardar el array completo
+    console.log('Lista de educaciones a enviar:', this.educationList);
+  
+    this.userService.setEducationList(this.educationList);
+    this.close();
   }
 
   // Método para añadir educación (puede ser expandido)
   onAdd(): void {
     if (this.educationForm.valid) {
-      // Lógica para añadir esta educación a una lista antes de enviar todo
-      console.log('Education added:', this.educationForm.value);
+      this.educationList.push(this.educationForm.value);// se hace copia para evitar mutaciones
+      console.log('Educación añadida:');
       this.educationForm.reset();
     } else {
       this.markAllAsTouched();
@@ -74,7 +83,7 @@ close() {
   getGraduationYears(): number[] {
   const currentYear = new Date().getFullYear();
   const years = [];
-  for (let i = currentYear - 10; i <= currentYear + 5; i++) {
+  for (let i = currentYear - 10; i <= currentYear; i++) {
     years.push(i);
   }
   return years;

@@ -57,10 +57,12 @@ export default class SignUpStudentComponent {
       this._AuthService.registerStudent(email, password)
     .subscribe({
       next: (res) => {
+        const role = res.role;
+        const hasPersonalData = res.has_personal_data;
         this._AuthService.saveUserData(res.access, 'student');
         toast.success('Usuario registrado con éxito!');
         // redirige
-        this.router.navigate(['/details-tutor/student']);
+        this.router.navigate(['/user/form-personal-data']);
       },
       error: (err) => {
         console.error(err);
