@@ -29,7 +29,13 @@ export default class SignInComponent {
       const { email, password } = this.signInForm.value;
       this.authService.login(email, password).subscribe({
         next: (res) => {
-          
+          // Agrega logs para inspeccionar la respuesta del backend
+          console.log('Respuesta del backend:', res);
+          console.log('Token:', res.token);
+          console.log('Role:', res.role);
+          console.log('Has Personal Data:', res.has_personal_data);
+          console.log('Has Professional Data:', res.has_professional_data);
+
           toast.success('¡Bienvenido de nuevo!');
 
           const token = res.token;

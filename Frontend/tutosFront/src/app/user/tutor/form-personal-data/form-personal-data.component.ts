@@ -101,6 +101,7 @@ export default class FormpersonaldataComponent {
         next: (res) => {
           const role = res.role;
           toast.success('Información guardada correctamente.');
+          
           if(role === 'student'){
             this.router.navigate(['/user/student/home-student']);
           } else{

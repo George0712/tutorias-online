@@ -26,7 +26,7 @@ export const UserRoutes: Routes = [
           {
             path: 'profile',
             loadComponent: () =>
-              import('./student/profile/profileStudent.component'),
+              import('./student/Profile/profileStudent.component'),
           },
         ],
       },
