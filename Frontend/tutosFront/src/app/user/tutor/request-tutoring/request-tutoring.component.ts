@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-requesttutoring',
   imports: [],
-  templateUrl: './requesttutoring.component.html',
-  styleUrl: './requesttutoring.component.css'
+  templateUrl: './request-tutoring.component.html',
+  styleUrl: './request-tutoring.component.css'
 })
 export class RequesttutoringComponent {
 

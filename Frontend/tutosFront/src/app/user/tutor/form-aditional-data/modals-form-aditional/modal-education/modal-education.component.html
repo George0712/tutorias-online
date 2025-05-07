@@ -1,0 +1,111 @@
+<div class="fixed inset-0 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-svh lg:py-0">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="relative form-education w-full z-10 bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-white dark:border-gray-700">
+      <div class="p-6 bg-white space-y-4 md:space-y-6 sm:p-8">
+        <button (click)="close()"
+                class="absolute top-2 right-2 p-1 rounded-xl cursor-pointer hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                <!-- SVG de la X -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+        <!-- Título y subtítulo -->
+    <h1 class="text-2xl font-bold text-gray-900 text-center">EDUCACIÓN</h1>
+    
+        <form [formGroup]="educationForm" class="relative space-y-4 md:space-y-6 bg-white opacity-100" (ngSubmit)="onSubmit()">
+          <!-- País -->
+          <div>
+            <select id="country" formControlName="country" class="form-input"
+              [class.border-red-500]="f['country'].touched && f['country'].errors">
+              <option value="">País</option>
+              <option value="mx">México</option>
+              <option value="co">Colombia</option>
+            </select>
+            <div *ngIf="f['country'].touched && f['country'].errors" class="text-red-500 text-xs mt-1">
+              <div *ngIf="f['country'].errors?.['required']">Selecciona un país</div>
+            </div>
+          </div>
+  
+          <!-- Universidad -->
+          <div>
+            <input type="text" id="university" formControlName="university" class="form-input" 
+              placeholder="Escribe el nombre de la universidad"
+              [class.border-red-500]="f['university'].touched && f['university'].errors">
+            <div *ngIf="f['university'].touched && f['university'].errors" class="text-red-500 text-xs mt-1">
+              <div *ngIf="f['university'].errors?.['required']">Este campo es requerido</div>
+              <div *ngIf="f['university'].errors?.['maxlength']">Máximo 100 caracteres</div>
+            </div>
+          </div>
+  
+          <!-- Título y Especialidad -->
+          <div class="flex gap-4">
+            <!-- Título -->
+            <div class="flex-1">
+              <select id="degree" formControlName="degree" class="form-input"
+                [class.border-red-500]="f['degree'].touched && f['degree'].errors">
+                <option value="">Título</option>
+                <option value="Licenciatura">Licenciatura</option>
+                <option value="Maestria">Maestría</option>
+                <option value="Doctorado">Doctorado</option>
+              </select>
+              <div *ngIf="f['degree'].touched && f['degree'].errors" class="text-red-500 text-xs mt-1">
+                <div *ngIf="f['degree'].errors?.['required']">Selecciona un título</div>
+              </div>
+            </div>
+  
+            <!-- Especialidad -->
+            <div class="flex-2">
+              <select id="specialty" formControlName="specialty" class="form-input"
+                [class.border-red-500]="f['specialty'].touched && f['specialty'].errors">
+                <option value="">Especialidad</option>
+                <option value="ingenieria">Ingeniería</option>
+                <option value="derecho">Derecho</option>
+                <option value="medicina">Medicina</option>
+                <option value="psicologia">Psicología</option>
+                <option value="educacion">Educación</option>
+                <option value="negocios">Negocios</option>
+                <option value="arte">Arte</option>
+                <option value="ciencias">Ciencias</option>
+                <option value="tecnologia">Tecnología</option>
+                <option value="ciencias sociales">Ciencias Sociales</option>
+                <option value="ciencias naturales">Ciencias Naturales</option>
+              </select>
+              <div *ngIf="f['specialty'].touched && f['specialty'].errors" class="text-red-500 text-xs mt-1">
+                <div *ngIf="f['specialty'].errors?.['required']">Selecciona una especialidad</div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Año de graduación -->
+          <div>
+            <select id="graduationYear" formControlName="graduationYear" class="form-input"
+              [class.border-red-500]="f['graduationYear'].touched && f['graduationYear'].errors">
+              <option value="">Año de graduación</option>
+              <option *ngFor="let year of getGraduationYears()" [value]="year">{{year}}</option>
+            </select>
+            <div *ngIf="f['graduationYear'].touched && f['graduationYear'].errors" class="text-red-500 text-xs mt-1">
+              <div *ngIf="f['graduationYear'].errors?.['required']">Selecciona el año</div>
+              <div *ngIf="f['graduationYear'].errors?.['pattern']">Año inválido</div>
+            </div>
+          </div>
+  
+          <!-- Botón Añadir -->
+          <div class="flex justify-end mb-12">
+              <button type="button" class="btn-add" (click)="onAdd()" [disabled]="isSubmitting">
+                Añadir
+              </button>
+          </div>
+          
+          <!-- Botón Guardar -->
+          <div class="mt-12">
+              <button type="submit" class="btn-save" (click)="onSubmit()" [disabled]="isSubmitting">
+                <span *ngIf="!isSubmitting">Guardar</span>
+                <span *ngIf="isSubmitting">Procesando...</span>
+              </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

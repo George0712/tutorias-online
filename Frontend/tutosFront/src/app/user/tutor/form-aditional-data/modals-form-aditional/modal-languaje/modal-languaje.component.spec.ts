@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProfileTutorComponent } from './profileTutor.component';
+import { ModalLanguajeComponent } from './modal-languaje.component';
 
-describe('ProfileComponent', () => {
-  let component: ProfileTutorComponent;
-  let fixture: ComponentFixture<ProfileTutorComponent>;
+describe('ModalLanguajeComponent', () => {
+  let component: ModalLanguajeComponent;
+  let fixture: ComponentFixture<ModalLanguajeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfileTutorComponent]
+      imports: [ModalLanguajeComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ProfileTutorComponent);
+    fixture = TestBed.createComponent(ModalLanguajeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

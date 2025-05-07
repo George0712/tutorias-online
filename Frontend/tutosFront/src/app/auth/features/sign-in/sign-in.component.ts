@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toast } from 'ngx-sonner';
 
 @Component({
@@ -12,44 +12,60 @@ import { toast } from 'ngx-sonner';
   providers: [AuthService],
 })
 export default class SignInComponent {
-  email: string = '';
-  password: string = '';
-  errorMessage: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  signInForm: FormGroup;
+
+  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {
+    this.signInForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
+    });
+  }
 
   onSubmit() {
-    if (!this.email || !this.password) return;
+    if (this.signInForm.invalid) return;
 
     try {
-      this.authService.login(this.email, this.password).subscribe({
+      const { email, password } = this.signInForm.value;
+      this.authService.login(email, password).subscribe({
         next: (res) => {
-          this.authService.saveUserData(res.access, res.role);
+          
           toast.success('¡Bienvenido de nuevo!');
 
           const token = res.token;
           const role = res.role;
+          const hasPersonalData = res.has_personal_data;
+          const hasProfessionalData = res.has_professional_data;
 
-          this.authService.saveUserData(token, role);
+          this.authService.saveUserData(token, role, hasPersonalData, hasProfessionalData);
 
           // Redirige según role
-          if (res.role === 'student') {
-            this.router.navigate(['/user/student/details-tutor']);
+          if (role === 'student') {
+            if (!hasPersonalData) {
+              this.router.navigate(['/user/student/form-personal-data']);
+            } else {
+              this.router.navigate(['/user/student/profile']);
+            }
+          } else if (role === 'tutor') {
+            if (!hasPersonalData) {
+              this.router.navigate(['/user/tutor/form-personal-data']);
+            } else if (!hasProfessionalData) {
+              this.router.navigate(['/user/tutor/form-aditional-data']);
+            } else {
+              this.router.navigate(['/user/tutor/profile']);
+            }
           } else {
-            this.router.navigate(['/user/tutor/form-personal-data']);
+            this.router.navigate(['/']);
           }
         },
         error: (err) => {
           console.error('Error de login:', err);
-          this.errorMessage = 'Correo o contraseña incorrectos';
-          toast.error(this.errorMessage);
+          toast.error('Correo o contraseña incorrectos');
         },
       });
     } catch (error) {
       console.error('Error en el login:', error);
-      this.errorMessage =
-        'Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde.';
-      toast.error(this.errorMessage);
+      toast.error('Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde.');
     }
   }
 }

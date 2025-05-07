@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+.form-education {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border-radius: 20px;
+}
+
+h1 {
+    font-family: "Quicksand", serif;
+}
+
+form {
+    font-family: "Quicksand", serif;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #7A757F;
+    border-radius: 8px;
+    background-color: #F9FAFB;
+    color: #333;
+    font-size: 14px;
+}
+
+.flex.space-x-2 .form-input {
+    width: 50%;
+}
+
+.btn-add {
+    background-color: #52474A;
+    color: white;
+    padding: 8px 16px; 
+    border-radius: 40px;
+    font-family: "Quicksand", serif;
+    margin-left: auto;
+    display: block; 
+    text-align: center;
+}
+
+.btn-add:hover {
+    background-color: #3e3a3c;
+    cursor: pointer;
+}
+
+.btn-save {
+    background-color: #A62639;
+    color: white;
+    width: 50%;
+    margin: 20px auto 0;
+    padding: 10px;
+    border-radius: 20px;
+    font-family: "Quicksand", serif;
+    display: block;
+    text-align: center;
+}
+
+.btn-save:hover {
+    background-color: #511C29;
+    cursor: pointer;
+}

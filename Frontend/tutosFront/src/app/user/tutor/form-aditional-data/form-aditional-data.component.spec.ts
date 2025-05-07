@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormaditionaldataComponent } from './formaditionaldata.component';
+import { FormaditionaldataComponent } from './form-aditional-data.component';
 
 describe('FormaditionaldataComponent', () => {
   let component: FormaditionaldataComponent;

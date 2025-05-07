@@ -5,27 +5,55 @@ export const UserRoutes: Routes = [
         path: 'user',
         children: [
             {
-                path: 'student/details-tutor',
-                loadComponent: () => import('./student/DetailTutor/detailtutor.component'),
+                //rutas de estudiante
+                path: 'student',
+                children: [
+                    {
+                        path: 'details-tutor',
+                        loadComponent: () => import('./student/detail-tutor/detail-tutor.component'),
+                    },
+                    {
+                        path: 'profile',
+                        loadComponent: () => import('./student/profile/profileStudent.component'),
+                    },
+                ]
             },
             {
-                path: 'student/profile',
-                loadComponent: () => import('./student/Profile/profileStudent.component'),
-            },
-            {
-                path: 'tutor/profile',
-                loadComponent: () => import('./tutor/Profile/profileTutor.component'),
-            },
-            {
-                path: 'tutor/form-personal-data',
-                loadComponent: () => import('./tutor/FormPersonalData/formpersonaldata.component'),
-            },
-            {
-                path: 'tutor/form-aditional-data',
-                loadComponent: () => import('./tutor/FormAditionalData/formaditionaldata.component'),
+                //rutas de tutor
+                path: 'tutor',
+                children: [
+                    {
+                        path: 'profile',
+                        loadComponent: () => import('./tutor/profile/profile-tutor.component'),
+                    },
+                    {
+                        path: 'form-personal-data',
+                        loadComponent: () => import('./tutor/form-personal-data/form-personal-data.component'),
+                    },
+                    {
+                        path: 'form-aditional-data',
+                        loadComponent: () => import('./tutor/form-aditional-data/form-aditional-data.component'),
+                        children: [
+                            {
+                                path: 'form-education-data',
+                                loadComponent: () => import('./tutor/form-aditional-data/modals-form-aditional/modal-education/modal-education.component'),
+                                outlet: 'modal',
+                            },
+                            {
+                                path: 'form-skills-data',
+                                loadComponent: () => import('./tutor/form-aditional-data/modals-form-aditional/modal-skills/modal-skills.component'),
+                                outlet: 'modal',
+                            },
+                            {
+                                path: 'form-language-data',
+                                loadComponent: () => import('./tutor/form-aditional-data/modals-form-aditional/modal-languaje/modal-languaje.component'),
+                                outlet: 'modal',
+                            }
+                        ]
+                    }
+                ]
             }
         ]
-
     }
 ];
 

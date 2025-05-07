@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-detailtutor',
   imports: [],
-  templateUrl: './detailtutor.component.html',
-  styleUrl: './detailtutor.component.css'
+  templateUrl: './detail-tutor.component.html',
+  styleUrl: './detail-tutor.component.css'
 })
 export default class DetailtutorComponent {
 
