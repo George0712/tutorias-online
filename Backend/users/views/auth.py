@@ -21,8 +21,6 @@ class StudentRegisterView(APIView):
             user = serializer.save()
             user.role = User.STUDENT
             user.save()
-            # Crear perfil de estudiante
-            Student.objects.create(user=user)
             return Response({"email": user.email, "role": user.role},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -40,7 +38,6 @@ class TutorRegisterView(APIView):
             user = serializer.save()
             user.role = User.TUTOR
             user.save()
-            # Perfil de Tutor se completará en siguiente paso
             return Response({"email": user.email, "role": user.role},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
