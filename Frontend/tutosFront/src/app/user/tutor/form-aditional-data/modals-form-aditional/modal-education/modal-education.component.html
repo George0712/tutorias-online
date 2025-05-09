@@ -100,7 +100,7 @@
           
           <!-- Botón Guardar -->
           <div class="mt-12">
-              <button type="submit" class="btn-save" (click)="onSubmit()" [disabled]="isSubmitting">
+              <button type="submit" class="btn-save" (click)="onSubmit()" [disabled]="isSubmitting || educationList.length === 0">
                 <span *ngIf="!isSubmitting">Guardar</span>
                 <span *ngIf="isSubmitting">Procesando...</span>
               </button>

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../../../../services/user.service';
 
 @Component({
   selector: 'app-modal-languaje',
@@ -12,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export default class ModalLanguajeComponent {
   languageForm: FormGroup;
   isSubmitting = false;
-  languagesList: any[] = []; // Para almacenar idiomas añadidos
+  languagesList: any[] = [];
 
   // Listas para los select (pueden venir de un servicio)
   idiomas = [
@@ -30,7 +31,7 @@ export default class ModalLanguajeComponent {
     { id: 4, name: 'Nativo' }
   ];
 
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute) {
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService) {
     this.languageForm = this.fb.group({
       idioma: ['', Validators.required],
       nivel: ['', Validators.required]
@@ -45,35 +46,42 @@ export default class ModalLanguajeComponent {
   }
 
   onSubmit(): void {
-    console.log('Form data:', this.languageForm.value);
-    if (this.languageForm.invalid) {
-      this.markAllAsTouched();
-      return;
+    if (this.languagesList.length === 0) {
+      if (this.languageForm.valid) {
+        this.onAdd();
+      } else {
+        this.markAllAsTouched();
+        return;
+      }
     }
 
     this.isSubmitting = true;
+    console.log('Idiomas a enviar:', this.languagesList);
+    this.userService.setLanguageList(this.languagesList);
+    this.close();
   }
 
 
   onAdd(): void {
-    if (this.languageForm.invalid) {
+    if (this.languageForm.valid) {
+      const idiomaSeleccionado = this.idiomas.find(i => i.id == this.languageForm.value.idioma)?.name;
+      const nivelSeleccionado = this.niveles.find(n => n.id == this.languageForm.value.nivel)?.name;
+
+      const nuevoIdioma = {
+        idioma: idiomaSeleccionado,
+        nivel: nivelSeleccionado
+      };
+
+      this.languagesList.push(nuevoIdioma);
+      this.languageForm.reset();
+      console.log('Idioma añadido:', nuevoIdioma);
+    } else {
       this.markAllAsTouched();
-      return;
     }
-
-    const newLanguage = {
-      idioma: this.idiomas.find(i => i.id == this.languageForm.value.idioma)?.name,
-      nivel: this.niveles.find(n => n.id == this.languageForm.value.nivel)?.name
-    };
-
-    this.languagesList.push(newLanguage);
-    this.languageForm.reset();
-    console.log('Idiomas actuales:', this.languagesList);
   }
 
-  // Método para eliminar un idioma de la lista
   removeLanguage(languageToRemove: any): void {
-    this.languagesList = this.languagesList.filter(lang => 
+    this.languagesList = this.languagesList.filter(lang =>
       lang.idioma !== languageToRemove.idioma || lang.nivel !== languageToRemove.nivel
     );
   }

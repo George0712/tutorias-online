@@ -99,8 +99,15 @@ export default class FormpersonaldataComponent {
 
       this.Service.SavePersonalData(dataToSend).subscribe({
         next: (res) => {
+          const role = res.role;
           toast.success('Información guardada correctamente.');
-          this.router.navigate(['/user/tutor/form-aditional-data']);
+          
+          if(role === 'student'){
+            this.router.navigate(['/user/student/home-student']);
+          } else{
+            this.router.navigate(['/user/tutor/form-aditional-data']);
+          }
+          
         },
         error: (err) => {
           console.error('Error al guardar información:', err);

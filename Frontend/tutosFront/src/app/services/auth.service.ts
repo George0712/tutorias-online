@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +8,11 @@ import { Observable } from 'rxjs';
 export class AuthService {
 
   private apiUrl = "http://127.0.0.1:8000/api/user/"; 
+  private loggedIn = new BehaviorSubject<boolean>(false);
+  public isLoggedIn$ = this.loggedIn.asObservable(); 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}login/`, { email, password });
@@ -34,10 +37,7 @@ export class AuthService {
     if (hasProfessionalData !== undefined) {
       localStorage.setItem('hasProfessionalData', String(hasProfessionalData));
     }
-  }
-
-  getRole(): string | null {
-    return localStorage.getItem('role');
+    this.loggedIn.next(true);
   }
 
   isStudent(): boolean {
@@ -48,16 +48,33 @@ export class AuthService {
     return this.getRole() === 'tutor';
   }
 
-  logout() {
-    localStorage.clear();
+  getRole(): string | null {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('role');
+    }
+    return null;
   }
-
+  
   getToken(): string | null {
-    return localStorage.getItem('token') || '';
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('token');
+    }
+    return null;
+  }
+  
+  isAuthenticated(): boolean {
+    return this.getToken() !== null;
+  }
+  
+  logout() {
+    if (typeof window !== 'undefined') {
+      localStorage.clear();
+      localStorage.removeItem('token');
+    }
+    this.loggedIn.next(false);
   }
 
-  isAuthenticated(): boolean {
-    const token = this.getToken();
-    return token !== null;
+  updateAuthStatus() {
+    this.loggedIn.next(this.isAuthenticated());
   }
 }
