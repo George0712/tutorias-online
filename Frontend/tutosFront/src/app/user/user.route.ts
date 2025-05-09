@@ -50,25 +50,22 @@ export const UserRoutes: Routes = [
                 path: 'form-education-data',
                 loadComponent: () =>
                   import(
-                    './tutor/form-aditional-data/modals-form-aditional/modal-education/modal-education.component'
+                    './tutor/form-aditional-data/modal-education/modal-education.component'
                   ),
-                outlet: 'modal',
               },
               {
                 path: 'form-skills-data',
                 loadComponent: () =>
                   import(
-                    './tutor/form-aditional-data/modals-form-aditional/modal-skills/modal-skills.component'
+                    './tutor/form-aditional-data/modal-skills/modal-skills.component'
                   ),
-                outlet: 'modal',
               },
               {
                 path: 'form-language-data',
                 loadComponent: () =>
                   import(
-                    './tutor/form-aditional-data/modals-form-aditional/modal-languaje/modal-languaje.component'
+                    './tutor/form-aditional-data/modal-languaje/modal-languaje.component'
                   ),
-                outlet: 'modal',
               },
             ],
           },

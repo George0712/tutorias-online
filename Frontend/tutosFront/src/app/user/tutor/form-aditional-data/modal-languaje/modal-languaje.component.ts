@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../../../services/user.service';
+import { MatDialogRef } from '@angular/material/dialog';
+import { UserService } from '../../../../services/user.service';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-modal-languaje',
@@ -15,13 +16,11 @@ export default class ModalLanguajeComponent {
   isSubmitting = false;
   languagesList: any[] = [];
 
-  // Listas para los select (pueden venir de un servicio)
   idiomas = [
-    { id: 1, name: 'Inglés' },
-    { id: 2, name: 'Español' },
+    { id: 1, name: 'Español' },
+    { id: 2, name: 'Inglés' },
     { id: 3, name: 'Francés' },
-    { id: 4, name: 'Alemán' },
-    { id: 5, name: 'Portugués' }
+    { id: 4, name: 'Alemán' }
   ];
 
   niveles = [
@@ -31,7 +30,11 @@ export default class ModalLanguajeComponent {
     { id: 4, name: 'Nativo' }
   ];
 
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService) {
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<ModalLanguajeComponent>,
+    private userService: UserService
+  ) {
     this.languageForm = this.fb.group({
       idioma: ['', Validators.required],
       nivel: ['', Validators.required]
@@ -39,10 +42,7 @@ export default class ModalLanguajeComponent {
   }
 
   close() {
-    this.router.navigate(
-      [{ outlets: { modal: null } }],
-      { relativeTo: this.route.parent } // vuelve al contexto padre
-    );
+    this.dialogRef.close();
   }
 
   onSubmit(): void {
@@ -56,11 +56,18 @@ export default class ModalLanguajeComponent {
     }
 
     this.isSubmitting = true;
-    console.log('Idiomas a enviar:', this.languagesList);
-    this.userService.setLanguageList(this.languagesList);
-    this.close();
+    this.userService.setLanguageList(this.languagesList).subscribe({
+      next: () => {
+        toast.success('Idiomas guardados correctamente');
+        this.dialogRef.close(this.languagesList);
+      },
+      error: (error) => {
+        console.error('Error al guardar idiomas:', error);
+        toast.error('Error al guardar los idiomas');
+        this.isSubmitting = false;
+      }
+    });
   }
-
 
   onAdd(): void {
     if (this.languageForm.valid) {
@@ -73,8 +80,7 @@ export default class ModalLanguajeComponent {
       };
 
       this.languagesList.push(nuevoIdioma);
-      this.languageForm.reset();
-      console.log('Idioma añadido:', nuevoIdioma);
+      this.languageForm.reset({ idioma: '', nivel: '' });
     } else {
       this.markAllAsTouched();
     }

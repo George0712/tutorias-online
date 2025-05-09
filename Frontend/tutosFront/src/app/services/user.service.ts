@@ -136,24 +136,26 @@ export class UserService {
       );
   }
 
-  setEducationList(data: any[]): void {
+  setEducationList(data: any[]): Observable<any> {
     this.educationList = data;
+    return this.http.post(`${this.apiUrl}education/`, { education: data });
   }
 
   getEducationList(): any[] {
     return this.educationList;
   }
 
-  setLanguageList(data: any[]): void {
-    this.languageList = data;
+  setLanguageList(languages: any[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}languages/`, { languages });
   }
 
   getLanguageList(): any[] {
     return this.languageList;
   }
 
-  setSkillList(data: any[]): void {
+  setSkillList(data: any[]): Observable<any> {
     this.SkillList = data;
+    return this.http.post(`${this.apiUrl}skills/`, { skills: data });
   }
 
   getSkillList(): any[] {

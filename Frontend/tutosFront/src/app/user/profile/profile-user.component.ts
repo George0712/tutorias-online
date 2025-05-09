@@ -10,10 +10,14 @@ import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { toast } from 'ngx-sonner';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import ModalLanguajeComponent from '../tutor/form-aditional-data/modal-languaje/modal-languaje.component';
+import ModalEducationComponent from '../tutor/form-aditional-data/modal-education/modal-education.component';
+import ModalSkillsComponent from '../tutor/form-aditional-data/modal-skills/modal-skills.component';
 
 @Component({
   selector: 'app-profile-user',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, MatDialogModule],
   templateUrl: './profile-user.component.html',
   styleUrl: './profile-user.component.css',
 })
@@ -28,7 +32,8 @@ export default class ProfileUserComponent implements OnInit {
     private fb: FormBuilder,
     private route: Router,
     private Service: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog
   ) {
     this.profileForm = this.fb.group({
       first_name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
@@ -151,5 +156,28 @@ export default class ProfileUserComponent implements OnInit {
   // Helper para acceder fácil a los controles del formulario
   get f() {
     return this.profileForm.controls;
+  }
+
+  openModal(type: 'languaje' | 'education' | 'skills'): void {
+    switch(type) {
+      case 'languaje':
+        this.dialog.open(ModalLanguajeComponent, {
+          width: '500px',
+          disableClose: true
+        });
+        break;
+      case 'education':
+        this.dialog.open(ModalEducationComponent, {
+          width: '500px',
+          disableClose: true
+        });
+        break;
+      case 'skills':
+        this.dialog.open(ModalSkillsComponent, {
+          width: '500px',
+          disableClose: true
+        });
+        break;
+    }
   }
 }

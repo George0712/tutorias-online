@@ -47,7 +47,65 @@
     </button>
     </div>
   </div>
+  <!-- Filtros -->
+  <div class="w-full mt-8 flex flex-wrap justify-center gap-4 items-center">
+    <!-- Nivel de Formación -->
+    <div class="min-w-[200px]">
+      <div class="flex items-center gap-2 px-3 py-1.5  rounded-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <select 
+          class="w-full bg-transparent focus:outline-none text-gray-700"
+          [(ngModel)]="selectedEducationLevel"
+        >
+          <option value="">Nivel de Formación</option>
+          <option value="pregrado">Pregrado</option>
+          <option value="maestria">Maestría</option>
+          <option value="doctorado">Doctorado</option>
+          <option value="especialista">Especialista</option>
+        </select>
+      </div>
+    </div>
 
+    <!-- Rango de Precios -->
+    <div class="min-w-[200px]">
+      <div class="flex items-center gap-2 px-3 py-1.5  rounded-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div class="flex items-center gap-2">
+          <input 
+            type="number" 
+            placeholder="Min"
+            [(ngModel)]="minPrice"
+            class="w-20 focus:outline-none text-gray-700"
+          >
+          <span class="text-gray-500 mx-2">-</span>
+          <input 
+            type="number" 
+            placeholder="Max"
+            [(ngModel)]="maxPrice"
+            class="w-20 focus:outline-none text-gray-700"
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Modalidad -->
+    <div class="flex items-center">
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input 
+          type="checkbox" 
+          [(ngModel)]="isOnline"
+          class="sr-only peer"
+        >
+        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#A62639]/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#A62639]"></div>
+        <span class="ml-3 text-sm font-medium text-gray-700">Solo clases en línea</span>
+      </label>
+    </div>
+  </div>
+  
   <!-- Tutores -->
   <section class="w-full pt-12">
     <div class="flex justify-between items-center mb-8">

@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../../../services/user.service';
+import { MatDialogRef } from '@angular/material/dialog';
+import { UserService } from '../../../../services/user.service';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-modal-skills',
@@ -13,7 +14,7 @@ import { UserService } from '../../../../../services/user.service';
 export default class ModalSkillsComponent {
   skillsForm: FormGroup;
   isSubmitting = false;
-  skillsList: any[] = []; // Para almacenar habilidades añadidas
+  skillsList: any[] = [];
 
   // Listas para los select (pueden venir de un servicio)
   habilidades = [
@@ -30,7 +31,11 @@ export default class ModalSkillsComponent {
     { id: 4, name: 'Experto' }
   ];
 
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService) {
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<ModalSkillsComponent>,
+    private userService: UserService
+  ) {
     this.skillsForm = this.fb.group({
       habilidad: ['', Validators.required],
       nivel: ['', Validators.required]
@@ -38,13 +43,9 @@ export default class ModalSkillsComponent {
   }
 
   close() {
-    this.router.navigate(
-      [{ outlets: { modal: null } }],
-      { relativeTo: this.route.parent } // vuelve al contexto padre
-    );
+    this.dialogRef.close();
   }
 
-  // Manejo del envío del formulario
   onSubmit(): void {
     if (this.skillsList.length === 0) {
       if (this.skillsForm.valid) {
@@ -56,12 +57,19 @@ export default class ModalSkillsComponent {
     }
 
     this.isSubmitting = true;
-    console.log('Habilidades a enviar:', this.skillsList);
-    this.userService.setSkillList(this.skillsList);
-    this.close();
+    this.userService.setSkillList(this.skillsList).subscribe({
+      next: () => {
+        toast.success('Habilidades guardadas exitosamente');
+        this.close();
+      },
+      error: (error) => {
+        console.error('Error al guardar las habilidades:', error);
+        toast.error('Error al guardar las habilidades');
+        this.isSubmitting = false;
+      }
+    });
   }
 
-  // Método para añadir habilidades a la lista
   onAdd(): void {
     if (this.skillsForm.valid) {
       const habilidadSeleccionada = this.habilidades.find(h => h.id == this.skillsForm.value.habilidad)?.name;
@@ -73,28 +81,27 @@ export default class ModalSkillsComponent {
       };
 
       this.skillsList.push(nuevaHabilidad);
-      this.skillsForm.reset();
-      console.log('Habilidad añadida:', nuevaHabilidad);
+      this.skillsForm.reset({ habilidad: '', nivel: '' });
+      toast.success('Habilidad añadida');
     } else {
       this.markAllAsTouched();
-    };
+    }
   }
 
-  // Marcar todos los campos como touched para mostrar errores
+  removeSkill(skillToRemove: any): void {
+    this.skillsList = this.skillsList.filter(skill => 
+      skill.habilidad !== skillToRemove.habilidad || skill.nivel !== skillToRemove.nivel
+    );
+    toast.success('Habilidad eliminada');
+  }
+
   private markAllAsTouched(): void {
     Object.values(this.skillsForm.controls).forEach(control => {
       control.markAsTouched();
     });
   }
 
-  // Helper para acceder fácil a los controles del formulario
   get f() {
     return this.skillsForm.controls;
   }
-  // Método para eliminar una habilidad de la lista
-  removeSkill(skillToRemove: any): void {
-  this.skillsList = this.skillsList.filter(skill => 
-    skill.habilidad !== skillToRemove.habilidad || skill.nivel !== skillToRemove.nivel
-  );
-}
 }

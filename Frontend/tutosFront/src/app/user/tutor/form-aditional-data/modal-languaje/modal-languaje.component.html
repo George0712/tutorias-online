@@ -1,7 +1,6 @@
 <div class="fixed inset-0 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-svh lg:py-0">
     <div class="absolute inset-0 bg-black opacity-50"></div>
-    <div
-        class="relative form-education w-full z-10 bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-white dark:border-gray-700">
+    <div class="relative form-education w-full z-10 bg-white rounded-lg shadow-2xl dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-white dark:border-gray-700">
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
             <button (click)="close()"
                 class="absolute top-2 right-2 p-1 rounded-xl cursor-pointer hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300">
@@ -12,55 +11,55 @@
                 </svg>
             </button>
             
-            <h1 class="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl dark:text-black text-center">IDIOMA
-            </h1>
-
-            <!-- Lista de idiomas añadidos -->
-            <div *ngIf="languagesList.length > 0" class="border rounded-lg p-4">
-                <h3 class="font-medium mb-2">Idiomas añadidos:</h3>
-                <ul class="space-y-2">
-                    <li *ngFor="let language of languagesList" class="flex justify-between items-center">
-                        <span>{{language.idioma}} ({{language.nivel}})</span>
-                        <button type="button" class="text-red-500" (click)="removeLanguage(language)">×</button>
-                    </li>
-                </ul>
-            </div>
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl dark:text-black text-center">IDIOMA</h1>
 
             <form [formGroup]="languageForm" class="space-y-4 md:space-y-6">
                 <!-- Idioma -->
                 <div>
                     <select id="idioma" formControlName="idioma" class="form-input"
                         [class.border-red-500]="f['idioma'].touched && f['idioma'].errors">
-                        <option value="">Idioma</option>
+                        <option value="" disabled>Selecciona un idioma</option>
                         <option *ngFor="let idioma of idiomas" [value]="idioma.id">{{idioma.name}}</option>
                     </select>
-                    <div *ngIf="f['idioma'].touched && f['idioma'].errors" class="text-red-500 text-xs mt-1">
-                        <div *ngIf="f['idioma'].errors?.['required']">Selecciona un idioma</div>
-                    </div>
                 </div>
 
                 <!-- Nivel -->
                 <div>
                     <select id="nivel" formControlName="nivel" class="form-input"
                         [class.border-red-500]="f['nivel'].touched && f['nivel'].errors">
-                        <option value="">Nivel</option>
+                        <option value="" disabled>Selecciona un nivel</option>
                         <option *ngFor="let nivel of niveles" [value]="nivel.id">{{nivel.name}}</option>
                     </select>
-                    <div *ngIf="f['nivel'].touched && f['nivel'].errors" class="text-red-500 text-xs mt-1">
-                        <div *ngIf="f['nivel'].errors?.['required']">Selecciona un nivel</div>
-                    </div>
                 </div>
 
                 <!-- Botón Añadir -->
-                <div class="flex justify-end mb-12">
+                <div class="flex justify-end mb-4">
                     <button type="button" class="btn-add" (click)="onAdd()" [disabled]="isSubmitting">
                         Añadir
                     </button>
                 </div>
 
+                <!-- Lista de idiomas añadidos -->
+                <div *ngIf="languagesList.length > 0" class="mt-4 space-y-2">
+                    <div *ngFor="let language of languagesList" 
+                         class="flex justify-between items-center p-2 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors">
+                        <span class="font-medium text-gray-900">{{language.idioma}} <span class="text-gray-600">({{language.nivel}})</span></span>
+                        <button type="button" 
+                                class="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors"
+                                (click)="removeLanguage(language)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Botón Guardar -->
-                <div class="mt-12">
-                    <button type="button" class="btn-save" (click)="onSubmit()" [disabled]="isSubmitting">
+                <div class="mt-8">
+                    <button type="button" 
+                            class="btn-save w-full disabled:opacity-50 disabled:cursor-not-allowed" 
+                            (click)="onSubmit()" 
+                            [disabled]="isSubmitting || languagesList.length === 0">
                         <span *ngIf="!isSubmitting">Guardar</span>
                         <span *ngIf="isSubmitting">Procesando...</span>
                     </button>

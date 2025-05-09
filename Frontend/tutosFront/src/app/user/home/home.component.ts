@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { CardTutorComponent } from '../shared/components/Cards/CardTutor/cardtutor.component';
-import { TutorService, Tutor } from '../services/tutor.service';
+import { CardTutorComponent } from '../../shared/components/Cards/CardTutor/cardtutor.component';
+import { TutorService, Tutor } from '../../services/tutor.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,8 +16,12 @@ import { Router } from '@angular/router';
 export default class HomeComponent implements OnInit {
   tutors: Tutor[] = [];
   loading = false;
-  searchTerm = '';
-  selectedLocation = 'default';
+  searchTerm: string = '';
+  selectedLocation: string = 'default';
+  selectedEducationLevel: string = '';
+  minPrice: number | null = null;
+  maxPrice: number | null = null;
+  isOnline: boolean = false;
 
   constructor(private router: Router) {}
 

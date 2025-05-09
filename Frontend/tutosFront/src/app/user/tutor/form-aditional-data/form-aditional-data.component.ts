@@ -5,13 +5,13 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-formaditionaldata',
-  imports: [ReactiveFormsModule, CommonModule, RouterLink, RouterOutlet],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './form-aditional-data.component.html',
   styleUrl: './form-aditional-data.component.css',
 })
