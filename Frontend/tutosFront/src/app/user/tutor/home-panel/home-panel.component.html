@@ -1,0 +1,60 @@
+<div class="min-h-screen max-w-screen-xl mx-auto">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Encabezado -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <h1 class="text-2xl font-bold text-gray-800">Bienvenido, {{ tutorName }}</h1>
+      <p class="text-gray-600 mt-2">Panel de Control del Tutor</p>
+    </div>
+
+    <!-- Sección de Estadísticas -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Estadísticas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="text-lg font-medium text-gray-700">Sesiones Totales</h3>
+            <p class="text-3xl font-bold text-[#A62639]">0</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="text-lg font-medium text-gray-700">Estudiantes Activos</h3>
+            <p class="text-3xl font-bold text-[#A62639]">0</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="text-lg font-medium text-gray-700">Calificación Promedio</h3>
+            <p class="text-3xl font-bold text-[#A62639]">0.0</p>
+          </div>
+        </div>
+      </div>
+
+    <!-- Tarjetas de Acción -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+      <!-- Tarjeta de Sesiones -->
+      <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Sesiones Programadas</h2>
+        <p class="text-gray-600 mb-4">Gestiona tus próximas sesiones de tutoría</p>
+        <button class="bg-[#A62639] text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-colors">
+          Ver Sesiones
+        </button>
+      </div>
+
+      <!-- Tarjeta de Estudiantes -->
+      <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Mis Estudiantes</h2>
+        <p class="text-gray-600 mb-4">Administra la lista de tus estudiantes</p>
+        <button class="bg-[#A62639] text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-colors">
+          Ver Estudiantes
+        </button>
+      </div>
+
+      <!-- Tarjeta de Calendario -->
+      <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Calendario</h2>
+        <p class="text-gray-600 mb-4">Organiza tu horario de tutorías</p>
+        <button class="bg-[#A62639] text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-colors">
+          Ver Calendario
+        </button>
+      </div>
+    </div>
+
+    
+  </div>
+</div> 

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '../auth/guards/auth.guard';
 
 export const UserRoutes: Routes = [
   {
@@ -7,27 +8,24 @@ export const UserRoutes: Routes = [
       {
         path: 'form-personal-data',
         loadComponent: () =>
-          import('./tutor/form-personal-data/form-personal-data.component'),
+          import('./form-personal-data/form-personal-data.component'),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./profile/profile-user.component'),
+        canActivate: [authGuard]
       },
       {
         //rutas de estudiante
         path: 'student',
         children: [
           {
-            path: 'home-student',
-            loadComponent: () =>
-              import('./student/home_student/home-student.component'),
-          },
-          {
             path: 'details-tutor',
             loadComponent: () =>
               import('./student/detail-tutor/detail-tutor.component'),
-          },
-          {
-            path: 'profile',
-            loadComponent: () =>
-              import('./student/profile/profileStudent.component'),
-          },
+          }
         ],
       },
       {
@@ -35,9 +33,10 @@ export const UserRoutes: Routes = [
         path: 'tutor',
         children: [
           {
-            path: 'profile',
+            path: 'mi-panel',
             loadComponent: () =>
-              import('./tutor/profile/profile-tutor.component'),
+              import('./tutor/home-panel/home-panel.component'),
+            canActivate: [authGuard],
           },
           {
             path: 'form-aditional-data',
@@ -45,6 +44,7 @@ export const UserRoutes: Routes = [
               import(
                 './tutor/form-aditional-data/form-aditional-data.component'
               ),
+            canActivate: [authGuard],
             children: [
               {
                 path: 'form-education-data',

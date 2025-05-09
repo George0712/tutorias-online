@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../../services/user.service';
+import { UserService } from '../../services/user.service';
 import { toast } from 'ngx-sonner';
 
 @Component({
@@ -92,21 +92,31 @@ export default class FormpersonaldataComponent {
         location: formValues.location,
         birthdate: formValues.birthdate,
         number_phone: formValues.number_phone,
-        photo: this.personalDataTutorForm.get('photo')?.value,
+        photo: this.personalDataTutorForm.get('photo')?.value || null,
       };
 
       console.log('Datos a enviar:', dataToSend);
 
       this.Service.SavePersonalData(dataToSend).subscribe({
         next: (res) => {
+          console.log('Respuesta del servidor:', res); // Log the full response
           const role = res.role;
-          toast.success('Información guardada correctamente.');
-          if(role === 'student'){
-            this.router.navigate(['/user/student/home-student']);
-          } else{
-            this.router.navigate(['/user/tutor/form-aditional-data']);
+          if (!role) {
+            console.error('El rol no está definido en la respuesta.');
+            toast.error('Hubo un problema al determinar el rol.');
+            return;
           }
-          
+
+          toast.success('Información guardada correctamente.');
+
+          if (role === 'student') {
+            this.router.navigate(['/user/student/home-student']);
+          } else if (role === 'tutor') {
+            this.router.navigate(['/user/tutor/form-aditional-data']);
+          } else {
+            console.error('Rol desconocido:', role);
+            toast.error('Rol desconocido recibido.');
+          }
         },
         error: (err) => {
           console.error('Error al guardar información:', err);

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 
 import { hasErrorEmail, hasErrorPassword, isRequired } from '../../../utils/validators';
@@ -14,17 +14,26 @@ interface SignUpStudentForm {
 
 @Component({
   selector: 'app-sign-up-student',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './sign-up-student.component.html',
   styleUrl: './sign-up-student.component.css',
 })
 export default class SignUpStudentComponent {
-  private _formBuilder = inject(FormBuilder);
-  private _AuthService = inject(AuthService);
-  private router = inject(Router);
+  formRegisterStudent: FormGroup;
 
-  isRequired(field: 'email' | 'password') {
-    return isRequired(field, this.formRegisterStudent);
+  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService){
+    this.formRegisterStudent = this.fb.group({
+      email: ['', [Validators.required, hasErrorEmail]],
+      password: ['', [Validators.required, hasErrorPassword]],
+      confirmPassword: ['', Validators.required],
+    }, {validators: this.passwordsMatchValidator});
+  }
+
+  isRequired(field: 'email' | 'password' | 'confirmPassword') {
+      if (field === 'confirmPassword') {
+          return this.formRegisterStudent.get(field)?.hasError('required') && this.formRegisterStudent.get(field)?.touched;
+      }
+      return isRequired(field, this.formRegisterStudent);
   }
 
   hasErrorEmail() {
@@ -35,34 +44,26 @@ export default class SignUpStudentComponent {
     return hasErrorPassword(this.formRegisterStudent);
   }
 
-  formRegisterStudent = this._formBuilder.group<SignUpStudentForm>({
-    email: this._formBuilder.control('', [
-      Validators.required,
-      Validators.email,
-    ]),
-    password: this._formBuilder.control('', [
-      Validators.required,
-      Validators.minLength(8),
-    ]),
-  });
+  passwordsMatchValidator(form: FormGroup) {
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordMismatch: true };
+  }
 
   onSubmit() {
     if (this.formRegisterStudent.invalid) return;
 
     try {
       const { email, password } = this.formRegisterStudent.value;
-
       if (!email || !password) return;
 
-      this._AuthService.registerStudent(email, password)
-    .subscribe({
+      this.authService.registerStudent(email, password).subscribe({
       next: (res) => {
-        const role = res.role;
-        const hasPersonalData = res.has_personal_data;
-        this._AuthService.saveUserData(res.access, 'student');
+        this.authService.saveUserData(res.access, 'student');
+        this.authService.setLoggedIn(true);
         toast.success('Usuario registrado con éxito!');
         // redirige
-        this.router.navigate(['/user/form-personal-data']);
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         console.error(err);

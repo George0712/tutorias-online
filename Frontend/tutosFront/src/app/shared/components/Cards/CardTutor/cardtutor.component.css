@@ -1,0 +1,40 @@
+.card {
+    background: #f1f1f1;
+    border-radius: 20px;
+    overflow: hidden;
+    width: calc(33% - 12px);
+    min-width: 260px;
+  }
+  
+  .card-image {
+    background: #d6d6d6;
+    height: 150px;
+  }
+  
+  .card-content {
+    padding: 10px 15px;
+  }
+  
+  .card-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .rating {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .star {
+    color: gold;
+    margin-right: 4px;
+  }
+
+  .subjects {
+    font-size: 14px;
+    color: #777;
+    margin-top: 5px;
+  }

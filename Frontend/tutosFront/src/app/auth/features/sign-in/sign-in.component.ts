@@ -3,14 +3,12 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toast } from 'ngx-sonner';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
   imports: [ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.css',
-  providers: [AuthService],
 })
 export default class SignInComponent {
   signInForm: FormGroup;
@@ -28,35 +26,9 @@ export default class SignInComponent {
     try {
       const { email, password } = this.signInForm.value;
       this.authService.login(email, password).subscribe({
-        next: (res) => {
-          
+        next: () => {
           toast.success('¡Bienvenido de nuevo!');
-
-          const token = res.token;
-          const role = res.role;
-          const hasPersonalData = res.has_personal_data;
-          const hasProfessionalData = res.has_professional_data;
-
-          this.authService.saveUserData(token, role, hasPersonalData, hasProfessionalData);
-
-          // Redirige según role
-          if (role === 'student') {
-            if (!hasPersonalData) {
-              this.router.navigate(['/user/form-personal-data']);
-            } else {
-              this.router.navigate(['/user/student/home-student']);
-            }
-          } else if (role === 'tutor') {
-            if (!hasPersonalData) {
-              this.router.navigate(['/user/form-personal-data']);
-            } else if (!hasProfessionalData) {
-              this.router.navigate(['/user/tutor/form-aditional-data']);
-            } else {
-              this.router.navigate(['/user/tutor/profile']);
-            }
-          } else {
-            this.router.navigate(['/']);
-          }
+          this.router.navigate(['/home']);
         },
         error: (err) => {
           console.error('Error de login:', err);

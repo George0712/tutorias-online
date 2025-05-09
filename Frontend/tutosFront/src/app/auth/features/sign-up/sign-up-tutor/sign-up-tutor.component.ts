@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../../services/auth.service';
@@ -14,17 +14,26 @@ interface SignUpTutorForm {
 
 @Component({
   selector: 'app-sign-up-tutor',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './sign-up-tutor.component.html',
   styleUrl: './sign-up-tutor.component.css',
 })
 export default class SignUpTutorComponent {
-  private _formBuilder = inject(FormBuilder);
-  private _AuthService = inject(AuthService);
-  private router = inject(Router);
+  formRegisterTutor: FormGroup;
 
-  isRequired(field: 'email' | 'password') {
-    return isRequired(field, this.formRegisterTutor);
+  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService){
+    this.formRegisterTutor = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.maxLength(8)]],
+      confirmPassword: ['', Validators.required],
+    }, {validators: this.passwordsMatchValidator});
+  }
+
+  isRequired(field: 'email' | 'password' | 'confirmPassword') {
+      if (field === 'confirmPassword') {
+          return this.formRegisterTutor.get(field)?.hasError('required') && this.formRegisterTutor.get(field)?.touched;
+      }
+      return isRequired(field, this.formRegisterTutor);
   }
 
   hasErrorEmail() {
@@ -35,36 +44,26 @@ export default class SignUpTutorComponent {
       return hasErrorPassword(this.formRegisterTutor);
     }
 
-  formRegisterTutor = this._formBuilder.group<SignUpTutorForm>({
-    email: this._formBuilder.control('', [
-      Validators.required,
-      Validators.email,
-      Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
-    ]),
-    password: this._formBuilder.control('', [
-      Validators.required,
-      Validators.minLength(8),
-      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
-    ]),
-  });
+    passwordsMatchValidator(form: FormGroup) {
+      const password = form.get('password')?.value;
+      const confirmPassword = form.get('confirmPassword')?.value;
+      return password === confirmPassword ? null : { passwordMismatch: true };
+    }
 
   onSubmit() {
     if (this.formRegisterTutor.invalid) return;
 
     try {
       const { email, password } = this.formRegisterTutor.value;
-
       if (!email || !password) return;
 
-      this._AuthService.registerTutor(email, password).subscribe({
+      this.authService.registerTutor(email, password).subscribe({
         next: (res) => {
-          const role = res.role;
-        const hasPersonalData = res.has_personal_data;
-        const hasProfessionalData = res.has_professional_data;
-          this._AuthService.saveUserData(res.access, 'tutor');
+          this.authService.saveUserData(res.access, 'tutor');
+          this.authService.setLoggedIn(true);
           toast.success('Usuario registrado con éxito!');
           // redirige
-          this.router.navigate(['/user/form-personal-data']);
+          this.router.navigate(['/home']);
         },
         error: (err) => {
           console.error(err);

@@ -14,9 +14,31 @@ export class UserService {
   private SkillList: any[] = [];
 
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
-  SavePersonalData(data: any): Observable<any> {
+  guardarFoto(file: File): void {
+    const formData = new FormData();
+    formData.append('photo', file, file.name || 'profile-picture');
+
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({
+      Authorization: `Token ${token}`
+    });
+    this.actualizarSoloFoto(formData, headers).subscribe({
+      next: (response) => {
+        console.log('Foto guardada exitosamente:', response);
+      },
+      error: (error) => {
+        console.error('Error al guardar la foto:', error);
+      },
+    });
+  }
+
+  actualizarSoloFoto(formData: FormData, headers: HttpHeaders): Observable<any> {
+    return this.http.put(`${this.apiUrl}profile/user/`, formData, { headers });
+  }
+
+  getUserPersonalData(): Observable<any> {
     const token = this.authService.getToken();
 
     if (!token) {
@@ -24,7 +46,33 @@ export class UserService {
       return throwError(() => new Error('No hay token disponible'));
     }
 
-    console.log('Token enviado:', token);
+    const headers = new HttpHeaders({
+      Authorization: `Token ${token}`,
+    });
+
+    return this.http.get<any>(`${this.apiUrl}profile/user/`, { headers }).pipe(
+      catchError((error) => {
+      console.error('Error al obtener los datos personales:', error);
+      return throwError(() =>  new Error(error.message || 'Error desconocido'));
+      })
+    );
+  }
+
+  SavePersonalData(data: any): Observable<any> {
+    const token = this.authService.getToken();
+    const role = this.authService.getRole();
+
+    if (!token) {
+      console.error('No hay token disponible');
+      return throwError(() => new Error('No hay token disponible'));
+    }
+
+    if (!role) {
+      console.error('No hay rol disponible');
+      return throwError(() => new Error('No hay rol disponible'));
+    }
+
+    console.log('Token enviado:', token, 'Rol:', role);
 
     const formData = new FormData();
     formData.append('first_name', data.first_name);
@@ -34,14 +82,7 @@ export class UserService {
     formData.append('birthdate', data.birthdate);
     formData.append('number_phone', data.number_phone);
 
-    if (data.photo) {
-      console.log('Foto añadida:', data.photo);
-      formData.append(
-        'photo',
-        data.photo,
-        data.photo.name || 'profile-picture'
-      );
-    }
+    formData.append('photo', data.photo || 'profile-picture');
 
     const headers = new HttpHeaders({
       Authorization: `Token ${token}`,
@@ -83,7 +124,7 @@ export class UserService {
     });
 
     return this.http
-      .put(`${this.apiUrl}profile/tutor/`, formData, { headers })
+      .put(`${this.apiUrl2}profile/tutor/`, formData, { headers })
       .pipe(
         catchError((error) => {
           console.error(
@@ -106,7 +147,7 @@ export class UserService {
   setLanguageList(data: any[]): void {
     this.languageList = data;
   }
-  
+
   getLanguageList(): any[] {
     return this.languageList;
   }
@@ -114,7 +155,7 @@ export class UserService {
   setSkillList(data: any[]): void {
     this.SkillList = data;
   }
-  
+
   getSkillList(): any[] {
     return this.SkillList;
   }

@@ -1,21 +1,67 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
+
+interface LoginResponse {
+  token: string;
+  role: string;
+  has_personal_data: boolean;
+  has_professional_data: boolean;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
   private apiUrl = "http://127.0.0.1:8000/api/user/"; 
   private loggedIn = new BehaviorSubject<boolean>(false);
-  public isLoggedIn$ = this.loggedIn.asObservable(); 
+  public isLoggedIn$ = this.loggedIn.asObservable();
+  private isBrowser: boolean;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+    if (this.isBrowser) {
+      this.initializeAuthState();
+    }
   }
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}login/`, { email, password });
+  private initializeAuthState() {
+    if (!this.isBrowser) return;
+    
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+    if (token && role) {
+      this.loggedIn.next(true);
+    }
+  }
+
+  private checkInitialAuthState(): boolean {
+    if (!this.isBrowser) return false;
+    
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+    return !!(token && role);
+  }
+
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}login/`, { email, password }).pipe(
+      tap(response => {
+        this.saveUserData(
+          response.token,
+          response.role,
+          response.has_personal_data,
+          response.has_professional_data
+        );
+      })
+    );
+  }
+
+  setLoggedIn(status: boolean) {
+    this.loggedIn.next(status);
   }
 
   registerStudent(email: string, password: string): Observable<any> {
@@ -27,6 +73,8 @@ export class AuthService {
   }
   
   saveUserData(token: string, role: string, hasPersonalData?: boolean, hasProfessionalData?: boolean) {
+    if (!this.isBrowser) return;
+
     localStorage.setItem('token', token);
     localStorage.setItem('role', role);
 
@@ -34,10 +82,11 @@ export class AuthService {
       localStorage.setItem('hasPersonalData', String(hasPersonalData));
     }
 
-    if (hasProfessionalData !== undefined) {
+    if (hasProfessionalData !== undefined && role === 'tutor') {
       localStorage.setItem('hasProfessionalData', String(hasProfessionalData));
     }
-    this.loggedIn.next(true);
+
+    this.setLoggedIn(true);
   }
 
   isStudent(): boolean {
@@ -49,32 +98,23 @@ export class AuthService {
   }
 
   getRole(): string | null {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('role');
-    }
-    return null;
+    if (!this.isBrowser) return null;
+    return localStorage.getItem('role');
   }
   
   getToken(): string | null {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('token');
-    }
-    return null;
+    if (!this.isBrowser) return null;
+    return localStorage.getItem('token');
   }
   
   isAuthenticated(): boolean {
-    return this.getToken() !== null;
+    return this.checkInitialAuthState();
   }
   
   logout() {
-    if (typeof window !== 'undefined') {
-      localStorage.clear();
-      localStorage.removeItem('token');
-    }
-    this.loggedIn.next(false);
-  }
-
-  updateAuthStatus() {
-    this.loggedIn.next(this.isAuthenticated());
+    if (!this.isBrowser) return;
+    
+    localStorage.clear();
+    this.setLoggedIn(false);
   }
 }

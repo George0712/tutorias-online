@@ -1,110 +1,173 @@
-<section class="max-w-screen-xl bg-white rounded-2xl mb-4 mt-4 mx-auto p-4 ">
-    <div class="flex flex-row justify-between h-1/2 p-6">
-        <div>
-            <h1 class="lg:text-3xl md:text-2xl sm:text-sm font-bold">JORGE ANDRÉS ARAUJO GUTIÉRREZ</h1>
-            <p class="mb-15">INGENIERO DE SISTEMAS</p>
-            <span class="text-red-800">Programación - Cáculo - Álgebra</span>
+<section class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Sección Principal -->
+    <div class="bg-white p-6 mb-6">
+        <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">NOMBRE COMPLETO TUTOR</h1>
+                <p class="text-gray-600 mb-4">Ocupación de Tutor</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-4 py-2 bg-[#A62639]/10 text-[#A62639] rounded-full text-sm">Programación</span>
+                    <span class="px-4 py-2 bg-[#A62639]/10 text-[#A62639] rounded-full text-sm">Cálculo</span>
+                    <span class="px-4 py-2 bg-[#A62639]/10 text-[#A62639] rounded-full text-sm">Álgebra</span>
+                </div>
+            </div>
+            <div class="w-full md:w-auto">
+                <button (click)="navigateToLogin()" class="w-full md:w-auto text-white bg-[#A62639] rounded-full px-8 py-3 font-medium hover:bg-red-800 transition-colors duration-200 flex items-center justify-center gap-2">
+                    <i class="fa fa-calendar-plus"></i>
+                    Reservar
+                </button>
+            </div>
         </div>
-        <div>
-            <img src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740" alt="Foto de perfil"
-            class="w-30 h-30 rounded-full border border-gray-300">
+    </div>
+
+    <!-- Información Detallada -->
+    <div class="flex justify-between items-center gap-6 mb-6">
+        <!-- Ubicación -->
+        <div class="bg-white p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                <i class="fa fa-map-marker-alt text-[#A62639] mr-2"></i>
+                UBICACIÓN
+            </h2>
+            <div class="flex items-center gap-2">
+                <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700 text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[#A62639]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/>
+                    </svg>
+                    Barranquilla
+                </span>
+                <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700 text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[#A62639]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" fill="currentColor"/>
+                    </svg>
+                    Virtual
+                </span>
+            </div>
+        </div>
+
+        <!-- Disponibilidad -->
+        <div class="bg-white p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                <i class="fa fa-clock text-[#A62639] mr-2"></i>
+                DISPONIBILIDAD
+            </h2>
+            <div class="flex items-center gap-2">
+                <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700 text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[#A62639]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z" fill="currentColor"/>
+                    </svg>
+                    Lunes - Viernes
+                </span>
+                <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700 text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[#A62639]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" fill="currentColor"/>
+                    </svg>
+                    8:00AM - 12:00PM
+                </span>
+            </div>
+        </div>
+
+        <!-- Tarifa -->
+        <div class="bg-white p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                <i class="fa fa-dollar-sign text-[#A62639] mr-2"></i>
+                TARIFA
+            </h2>
+            <div class="flex items-center gap-2">
+                <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700 text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[#A62639]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" fill="currentColor"/>
+                    </svg>
+                    A convenir
+                </span>
+            </div>
         </div>
     </div>
-</section>
-<section class="max-w-screen-xl bg-white rounded-2xl mb-4 mt-4 mx-auto p-4">
-    <div class="flex flex-wrap justify-between pl-6 pr-6 pt-4 pb-4">
-        <span>
-            <h2 class="font-medium mb-2">UBICACIÓN</h2>
-            <div class="flex flex-row">
-                <div class="rounded-3xl bg-gray-200 pt-2 pb-2 pl-4 pr-4 mb-2 mr-2">
-                    <p class="flex justify-center">Barranquilla</p>
-                </div>
-                <div class="rounded-3xl bg-gray-200 pt-2 pb-2 pl-4 pr-4 mb-2 mr-2">
-                    <p class="flex justify-center">Modalidad</p>
-                </div>
-            </div>
-        </span>
-        <span>
-            <h2 class="font-medium mb-2">DISPONIBILIDAD</h2>
-            <div class="flex flex-row ">
-                <div class="rounded-3xl bg-gray-200 pt-2 pb-2 pl-4 pr-4 mb-2 mr-2">
-                    <p class="flex justify-center">Lunes - viernes</p>
-                </div>
-                <div class="rounded-3xl bg-gray-200 pt-2 pb-2 pl-4 pr-4 mb-2 mr-2">
-                    <p class="flex justify-center">8:00AM-12:00PM</p>
-                </div>
-            </div>
-        </span>
-        <span>
-            <h2 class="font-medium mb-2">TARIFA</h2>
-            <div class="flex flex-row">
-                <div class="rounded-3xl bg-gray-200 pt-2 pb-2 pl-4 pr-4 mb-2">
-                    <p class="flex justify-center">A convenir</p>
-                </div>
-            </div>
-        </span>
+
+    <!-- Acerca del Tutor -->
+    <div class="bg-white p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fa fa-user text-[#A62639] mr-2"></i>
+            ACERCA DEL TUTOR
+        </h2>
+        <p class="text-gray-600 leading-relaxed">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </p>
     </div>
-</section>
-<section class="max-w-screen-xl bg-white rounded-2xl mb-4 mt-4 mx-auto p-4">
-    <div class="pt-2 pb-2 pl-4 pr-4 ">
-        <span>
-            <h2 class="font-medium mb-4">ACERCA DE TUTOR</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        </span>
-    </div>
-</section>
-<section class="max-w-screen-xl bg-white rounded-2xl mb-4 mt-4 mx-auto p-4">
-    <div class="pt-2 pb-2 pl-4 pr-4 ">
-        <span>
-            <h2 class="font-medium mb-4">EDUCACIÓN</h2>
-            <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </span>
-    </div>
-</section>
-<section class="max-w-screen-xl bg-white rounded-2xl mb-4 mt-4 mx-auto p-4">
-    <div class="pt-2 pb-2 pl-4 pr-4 ">
-        <span>
-            <h2 class="font-medium mb-4">EXPERIENCIA Y HABILIDADES</h2>
-            <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </span>
-    </div>
-</section>
-<section class="max-w-screen-xl bg-white rounded-2xl mb-4 mt-4 mx-auto p-4">
-    <div class="pt-2 pb-2 pl-4 pr-4 ">
-        <h2 class="font-medium mb-4">RESEÑAS</h2>
-        <span>
-            <div class="flex flex-row mb-2 bg-gray-300 rounded-4xl pt-2 pb-2">
-                <div class="flex flex-col justify-between pl-4 pr-4">
-                    <p class="font-bold">Nombre</p>
-                    <p class="text-sm">xxxxx</p>
-                    <p class="text-sm">mm/aaaa</p>
-                </div>
-                <p class="mb-2 text-wrap">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+    <!-- Educación -->
+    <div class="bg-white p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fa fa-graduation-cap text-[#A62639] mr-2"></i>
+            EDUCACIÓN
+        </h2>
+        <div class="space-y-4">
+            <div class="flex items-start">
+                <div class="w-2 h-2 rounded-full bg-[#A62639] mt-2 mr-3"></div>
+                <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-        </span>
-        <span>
-            <div class="flex flex-row mb-2 bg-gray-300 rounded-4xl pt-2 pb-2">
-                <div class="flex flex-col justify-between pl-4 pr-4">
-                    <p class="font-bold">Nombre</p>
-                    <p class="text-sm">xxxxx</p>
-                    <p class="text-sm">mm/aaaa</p>
-                </div>
-                <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <div class="flex items-start">
+                <div class="w-2 h-2 rounded-full bg-[#A62639] mt-2 mr-3"></div>
+                <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-        </span>
-        <span>
-            <div class="flex flex-row mb-2 bg-gray-300 rounded-4xl pt-2 pb-2">
-                <div class="flex flex-col justify-between pl-4 pr-4">
-                    <p class="font-bold">Nombre</p>
-                    <p class="text-sm">xxxxx</p>
-                    <p class="text-sm">mm/aaaa</p>
-                </div>
-                <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <div class="flex items-start">
+                <div class="w-2 h-2 rounded-full bg-[#A62639] mt-2 mr-3"></div>
+                <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-        </span>
+        </div>
+    </div>
+
+    <!-- Experiencia y Habilidades -->
+    <div class="bg-white p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fa fa-briefcase text-[#A62639] mr-2"></i>
+            EXPERIENCIA Y HABILIDADES
+        </h2>
+        <div class="space-y-4">
+            <div class="flex items-start">
+                <div class="w-2 h-2 rounded-full bg-[#A62639] mt-2 mr-3"></div>
+                <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <div class="flex items-start">
+                <div class="w-2 h-2 rounded-full bg-[#A62639] mt-2 mr-3"></div>
+                <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+            <div class="flex items-start">
+                <div class="w-2 h-2 rounded-full bg-[#A62639] mt-2 mr-3"></div>
+                <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reseñas -->
+    <div class="bg-white p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+            <i class="fa fa-star text-[#A62639] mr-2"></i>
+            RESEÑAS
+        </h2>
+        <div class="space-y-4">
+            <app-review 
+                name="Juan Pérez"
+                [rating]="5"
+                date="01/2025"
+                comment="Excelente tutor, muy paciente y explica muy bien los conceptos."
+                class="rounded-full p-4 mb-2"
+            ></app-review>
+
+            <app-review 
+                name="María González"
+                [rating]="4"
+                date="02/2025"
+                comment="Buen profesor, las clases son muy dinámicas y aprendí mucho."
+                class="rounded-full p-4 mb-2"
+            ></app-review>
+
+            <app-review 
+                name="Carlos Rodríguez"
+                [rating]="5"
+                date="03/2025"
+                comment="Muy recomendado, las clases son personalizadas y efectivas."
+                class=" rounded-full p-4 mb-2"
+            ></app-review>
+        </div>
     </div>
 </section>
