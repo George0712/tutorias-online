@@ -1,39 +1,33 @@
-from rest_framework import serializers
-from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
-from users.models import User
+# users/serializers/auth.py
 
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
+from rest_framework.authtoken.models import Token
+
+from users.models import Tutor
+from professional.models import ProfessionalProfile
 
 User = get_user_model()
 
 class RegistrationSerializer(serializers.ModelSerializer):
     """
-    Serializer genérico para registrar usuarios usando email como username.
+    Serializer para registrar usuarios usando email como username.
     Solo maneja email y password. El role se asigna en la vista.
     """
     password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = User
+        model  = User
         fields = ['email', 'password']
 
     def create(self, validated_data):
-        email = validated_data.get('email')
+        email    = validated_data['email']
         password = validated_data.pop('password')
-        username = email
-        user = User(username=username, email=email)
+        user = User(username=email, email=email)
         user.set_password(password)
         user.save()
         return user
 
-from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from rest_framework.authtoken.models import Token
-from users.models import Tutor
-from professional.models import Education, Skill, Language  # ajusta el import
-
-User = get_user_model()
 
 class LoginSerializer(serializers.Serializer):
     email                 = serializers.EmailField()
@@ -48,7 +42,7 @@ class LoginSerializer(serializers.Serializer):
         password = data.get('password')
 
         user = User.objects.filter(email__iexact=email).first()
-        if user is None or not user.check_password(password):
+        if not user or not user.check_password(password):
             raise serializers.ValidationError({
                 'email':    ['Credenciales inválidas.'],
                 'password': ['Credenciales inválidas.']
@@ -58,29 +52,34 @@ class LoginSerializer(serializers.Serializer):
 
         # 1) Datos personales completos?
         personal_fields = [
-            user.first_name, user.last_name,
-            user.id_number, user.location,
-            user.number_phone
+            user.first_name,
+            user.last_name,
+            user.id_number,
+            user.location,
+            user.number_phone,
         ]
         has_personal = all(bool(f) for f in personal_fields)
 
-        # 2) Perfil profesional: about_me, fee, modality
-        # 3) Datos de la app professional: al menos 1 registro en cada modelo
+        # 2) Perfil profesional: solo para tutores
         has_professional = False
         if user.role == User.TUTOR:
             try:
-                tutor = user.tutor_profile
-                core_profile_ok = all([
-                    bool(tutor.about_me),
-                    tutor.fee_per_hour is not None,
-                    bool(tutor.modality),
-                ])
-                # comprueba existencia de al menos un registro
-                has_educations = tutor.educations.exists()
-                has_skills     = tutor.skills.exists()
-                has_languages  = tutor.languages.exists()
-                has_professional = core_profile_ok and has_educations and has_skills and has_languages
-            except Tutor.DoesNotExist:
+                # Obtén el ProfessionalProfile asociado
+                profile = user.tutor_profile.professional_profile
+                # Comprueba datos core del perfil profesional
+                core_ok = (
+                    bool(profile.about_me) and
+                    profile.fee_per_hour is not None and
+                    bool(profile.modality)
+                )
+                # Ahora, desde profile.tutor llegas al Tutor,
+                # y desde ahí compruebas sus educations, skills y languages
+                tutor = profile.tutor
+                has_educ = tutor.educations.exists()
+                has_skl  = tutor.skills.exists()
+                has_lang = tutor.languages.exists()
+                has_professional = core_ok and has_educ and has_skl and has_lang
+            except (ProfessionalProfile.DoesNotExist):
                 has_professional = False
 
         return {
