@@ -108,8 +108,8 @@ export default class FormpersonaldataComponent {
           }
 
           toast.success('Información guardada correctamente.');
-
-          if (role === 'student') {
+          
+          if(role === 'student'){
             this.router.navigate(['/user/student/home-student']);
           } else if (role === 'tutor') {
             this.router.navigate(['/user/tutor/form-aditional-data']);

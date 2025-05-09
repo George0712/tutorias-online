@@ -35,10 +35,6 @@ class Tutor(models.Model):
         on_delete=models.CASCADE, 
         related_name='tutor_profile'
     )
-    status = models.BooleanField(default=True, null=True, blank=True)
-    about_me = models.TextField(blank=True, null=True)
-    fee_per_hour = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
-    modality = models.CharField(max_length=50, blank=True, null=True)  # Presencial, Online, Híbrido
 
     def __str__(self):
         return f'Tutor: {self.user.username}'
