@@ -26,6 +26,7 @@ export default class ProfileUserComponent implements OnInit {
   profileAdicionalForm: FormGroup;
   photo: string = '/default-avatar.jpg';
   userPersonalData: any = {};
+  userAditionalData: any = {};
   role: string = '';
 
   constructor(
@@ -45,7 +46,11 @@ export default class ProfileUserComponent implements OnInit {
       photo: [''],
     });
 
-    this.profileAdicionalForm = this.fb.group({});
+    this.profileAdicionalForm = this.fb.group({
+      about_me: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(500)]],
+      hourly_rate: ['', [Validators.required, Validators.min(10000), Validators.max(1000000)]],
+      modality: ['', Validators.required],
+    });
   }
 
   ngOnInit(): void {
@@ -97,7 +102,6 @@ export default class ProfileUserComponent implements OnInit {
     try {
       const formValues = this.profileForm.value;
 
-      console.log('este es el form de personal data');
       const dataToSend = {
         first_name: formValues.first_name,
         last_name: formValues.last_name,
@@ -107,8 +111,6 @@ export default class ProfileUserComponent implements OnInit {
         number_phone: formValues.number_phone,
         photo: this.profileForm.get('photo')?.value || null,
       };
-
-      console.log('Datos a enviar:', dataToSend);
 
       this.Service.SavePersonalData(dataToSend).subscribe({
         next: () => {
@@ -133,7 +135,23 @@ export default class ProfileUserComponent implements OnInit {
 
     try {
       const formValues = this.profileAdicionalForm.value;
-      console.log('este es el form de aditional data');
+
+      const dataToSend = {
+        about_me: formValues.about_me,
+        hourly_rate: formValues.hourly_rate,
+        modality: formValues.modality,
+      };
+
+      console.log('datos a enviar:', dataToSend);
+      this.Service.SaveAdditionalData(dataToSend).subscribe({
+        next: () => {
+          toast.success('Información guardada correctamente.');
+        },
+        error: (err) => {
+          console.error('Error al guardar información:', err);
+          toast.error('Hubo un problema al guardar la información.');
+        },
+      });
     } catch (error) {
       console.error('Error inesperado:', error);
       toast.error('Hubo un problema inesperado al guardar la información.');

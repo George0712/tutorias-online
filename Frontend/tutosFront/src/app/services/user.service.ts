@@ -118,8 +118,8 @@ export class UserService {
     console.log('Token enviado:', token);
 
     const formData = new FormData();
-    formData.append('about_you', data.aboutYou);
-    formData.append('hourly_rate', data.hourlyRate);
+    formData.append('about_me', data.about_me);
+    formData.append('hourly_rate', data.hourly_rate);
     formData.append('modality', data.modality);
 
     const headers = new HttpHeaders({
@@ -127,7 +127,7 @@ export class UserService {
     });
 
     return this.http
-      .put(`${this.apiUrl2}profile/`, formData, { headers })
+      .post(`${this.apiUrl2}profile/`, formData, { headers })
       .pipe(
         catchError((error) => {
           console.error(

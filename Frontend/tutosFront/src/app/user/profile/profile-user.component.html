@@ -112,18 +112,19 @@
                     <div class="col-span-2">
                         <label class="block text-sm font-medium text-gray-700">Acerca de ti</label>
                         <textarea
+                            formControlName="about_me" [(ngModel)]="userAditionalData.about_me"
                             class="w-full max-h-52 p-2 border border-gray-300 rounded-3xl focus:outline-none"></textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Tarifa por hora</label>
                         <div class="w-full flex border border-gray-300 rounded-full p-2">
                             <span class="mr-2 text-gray-500">$</span>
-                            <input type="text" class="w-full outline-none">
+                            <input type="text" formControlName="hourly_rate" [(ngModel)]="userAditionalData.hourly_rate" class="w-full outline-none">
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Modalidad</label>
-                        <select class="w-full border border-gray-300 rounded-full p-2 outline-none">
+                        <select formControlName="modality" [(ngModel)]="userAditionalData.modality" class="w-full border border-gray-300 rounded-full p-2 outline-none">
                             <option value="">Selecciona una modalidad</option>
                             <option value="presencial">Presencial</option>
                             <option value="virtual">Virtual</option>
