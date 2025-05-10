@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions
-from users.serializers.registration import UserProfileSerializer
+from users.serializers.user import UserProfileSerializer
 from users.models import Student
 
 
