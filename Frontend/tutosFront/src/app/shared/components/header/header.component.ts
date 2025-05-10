@@ -3,6 +3,8 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Observable, map, Subscription, BehaviorSubject } from 'rxjs';
+import { UserService } from '../../../services/user.service';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-header',
@@ -17,16 +19,20 @@ export class HeaderComponent implements OnDestroy {
   private authState = new BehaviorSubject<boolean>(false);
   isLoggedIn$: Observable<boolean>;
   role$: Observable<string | null>;
+  role: string = '';
   isLoggedIn = false;
   isStudent = false;
   isTutor = false;
   private authSubscription: Subscription | null = null;
+  photo: string = '/default-avatar.jpg';
+  userPersonalData: any = {};
 
   constructor(
     private authService: AuthService, 
     private router: Router, 
     private eRef: ElementRef,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private Service: UserService
   ) {
     this.isLoggedIn$ = this.authState.asObservable();
     this.role$ = this.isLoggedIn$.pipe(
@@ -44,12 +50,32 @@ export class HeaderComponent implements OnDestroy {
       this.updateAuthState();
       this.cdr.markForCheck(); // Usa markForCheck en OnPush
     });
+
+    if (this.authService.isAuthenticated()) {
+      this.role = this.authService.getRole() || '';
+      this.loadProfileImage();
+    }
   }
 
   private updateAuthState() {
     this.isLoggedIn = this.authService.isAuthenticated();
     this.isStudent = this.authService.isStudent();
     this.isTutor = this.authService.isTutor();
+  }
+
+  private loadProfileImage(): void {
+    this.Service.getUserPersonalData().subscribe({
+      next: data => {
+        this.userPersonalData = data;
+        // Asegurar que usamos el campo correcto de tu API, p.e. 'photo' o 'profile_picture'
+        this.photo = this.Service.getImageUrl(data.photo);
+        this.cdr.markForCheck();
+      },
+      error: error => {
+        console.error('Error al obtener los datos personales:', error);
+        toast.error('Error al cargar los datos del perfil');
+      }
+    });
   }
 
   ngOnDestroy(): void {

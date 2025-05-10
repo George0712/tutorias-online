@@ -10,7 +10,7 @@
     <ng-container *ngIf="isLoggedIn$ | async">
       <div class="relative inline-block text-left">
         <button (click)="toggleDropdown()" class="flex items-center space-x-2 focus:outline-none cursor-pointer">
-          <img src="/default-avatar.jpg" alt="Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-[#A62639]" />
+          <img [src]="userPersonalData.photo || '/default-avatar.jpg'" alt="Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-[#A62639]" />
         </button>
   
         <div *ngIf="showDropdown" class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
