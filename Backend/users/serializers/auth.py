@@ -63,24 +63,22 @@ class LoginSerializer(serializers.Serializer):
         # 2) Perfil profesional: solo para tutores
         has_professional = False
         if user.role == User.TUTOR:
-            try:
-                # Obtén el ProfessionalProfile asociado
-                profile = user.tutor_profile.professional_profile
-                # Comprueba datos core del perfil profesional
-                core_ok = (
-                    bool(profile.about_me) and
-                    profile.fee_per_hour is not None and
-                    bool(profile.modality)
-                )
-                # Ahora, desde profile.tutor llegas al Tutor,
-                # y desde ahí compruebas sus educations, skills y languages
-                tutor = profile.tutor
-                has_educ = tutor.educations.exists()
-                has_skl  = tutor.skills.exists()
-                has_lang = tutor.languages.exists()
-                has_professional = core_ok and has_educ and has_skl and has_lang
-            except (ProfessionalProfile.DoesNotExist):
-                has_professional = False
+            # a) Obtén el objeto Tutor, si existe
+            tutor = Tutor.objects.filter(user=user).first()
+            if tutor:
+                # b) Intenta obtener el profile profesional
+                prof = getattr(tutor, 'professional_profile', None)
+                if prof:
+                    core_ok = (
+                        bool(prof.about_me) and
+                        prof.fee_per_hour is not None and
+                        bool(prof.modality)
+                    )
+                    # c) Comprueba también al menos 1 registro en cada relación
+                    has_educ = tutor.educations.exists()
+                    has_skl  = tutor.skills.exists()
+                    has_lang = tutor.languages.exists()
+                    has_professional = core_ok and has_educ and has_skl and has_lang
 
         return {
             'token':                 token.key,
