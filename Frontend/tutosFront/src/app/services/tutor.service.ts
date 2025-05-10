@@ -64,7 +64,7 @@ export class TutorService {
       id: data?.id || 0,
       first_name: data?.first_name || data?.user?.first_name || '',
       last_name: data?.last_name || data?.user?.last_name || '',
-      photo: data?.photo || data?.user?.photo || 'assets/images/default-avatar.png',
+      photo: data?.photo || data?.user?.photo || '/default-avatar.jpg',
       location: data?.location || 'No especificada',
       modality: data?.modality || 'No especificada',
       hourly_rate: data?.hourly_rate || 0,

@@ -1,4 +1,4 @@
-<div class="border-gray-200 bg-white">
+<div class="border-gray-200 bg-transparent w-full fixed top-0 left-0 z-50">
   <div class="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto p-4">
     <a href="#" class="flex items-center rtl:space-x-reverse">
       <span class="tutor-logo self-center text-2xl font-bold whitespace-nowrap dark:text-black">TUTOR</span>
@@ -8,7 +8,7 @@
     <!-- Cuando el usuario SÍ ha iniciado sesión -->
     <ng-container *ngIf="isLoggedIn$ | async">
       <div class="relative inline-block text-left">
-        <button (click)="toggleDropdown()" class="flex items-center space-x-2 focus:outline-none">
+        <button (click)="toggleDropdown()" class="flex items-center space-x-2 focus:outline-none cursor-pointer">
           <img src="/default-avatar.jpg" alt="Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-[#A62639]" />
         </button>
   
@@ -50,11 +50,11 @@
       <div class="w-full md:block md:w-auto" id="navbar-default">
         <div>
           <button routerLink="/auth/login"
-            class="text-red-800 rounded-3xl border border-red-900 cursor-pointer font-medium text-sm px-5 py-2.5 text-center mr-2">
+            class="text-red-800 rounded-3xl border border-[#A62639] hover:bg-[#A62639] hover:text-white cursor-pointer font-medium text-sm px-5 py-2.5 text-center mr-2">
             Acceder
           </button>
           <button routerLink="/auth/register/tutor"
-            class="text-white bg-[#A62639] rounded-3xl cursor-pointer hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium text-sm px-5 py-2.5 text-center">
+            class="text-white bg-[#A62639] hover:bg-[#8a1f2f] rounded-3xl cursor-pointer font-medium text-sm px-5 py-2.5 text-center">
             Ser Tutor
           </button>
         </div>

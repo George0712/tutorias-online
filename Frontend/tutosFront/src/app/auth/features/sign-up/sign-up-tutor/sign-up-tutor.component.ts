@@ -60,10 +60,9 @@ export default class SignUpTutorComponent {
       this.authService.registerTutor(email, password).subscribe({
         next: (res) => {
           this.authService.saveUserData(res.access, 'tutor');
-          this.authService.setLoggedIn(true);
           toast.success('Usuario registrado con éxito!');
           // redirige
-          this.router.navigate(['/home']);
+          this.router.navigate(['/auth/login']);
         },
         error: (err) => {
           console.error(err);

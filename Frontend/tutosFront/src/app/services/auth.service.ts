@@ -85,8 +85,6 @@ export class AuthService {
     if (hasProfessionalData !== undefined && role === 'tutor') {
       localStorage.setItem('hasProfessionalData', String(hasProfessionalData));
     }
-
-    this.setLoggedIn(true);
   }
 
   isStudent(): boolean {

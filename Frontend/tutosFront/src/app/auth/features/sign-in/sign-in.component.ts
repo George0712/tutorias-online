@@ -27,6 +27,7 @@ export default class SignInComponent {
       const { email, password } = this.signInForm.value;
       this.authService.login(email, password).subscribe({
         next: (res) => {
+          this.authService.setLoggedIn(true);
           toast.success('¡Bienvenido de nuevo!');
           this.router.navigate(['/home']);
         },

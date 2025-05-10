@@ -79,10 +79,16 @@ export class UserService {
     formData.append('last_name', data.last_name);
     formData.append('id_number', data.id_number);
     formData.append('location', data.location);
-    formData.append('birthdate', data.birthdate);
     formData.append('number_phone', data.number_phone);
 
-    formData.append('photo', data.photo || 'profile-picture');
+    // Campos opcionales
+    if (data.birthdate) {
+      formData.append('birthdate', data.birthdate);
+    }
+    
+    if (data.photo) {
+      formData.append('photo', data.photo);
+    }
 
     const headers = new HttpHeaders({
       Authorization: `Token ${token}`,
@@ -115,16 +121,13 @@ export class UserService {
     formData.append('about_you', data.aboutYou);
     formData.append('hourly_rate', data.hourlyRate);
     formData.append('modality', data.modality);
-    formData.append('education', data.education);
-    formData.append('language', data.language);
-    formData.append('skills', data.skills);
 
     const headers = new HttpHeaders({
       Authorization: `Token ${token}`,
     });
 
     return this.http
-      .put(`${this.apiUrl2}profile/tutor/`, formData, { headers })
+      .put(`${this.apiUrl2}profile/`, formData, { headers })
       .pipe(
         catchError((error) => {
           console.error(
@@ -138,7 +141,7 @@ export class UserService {
 
   setEducationList(data: any[]): Observable<any> {
     this.educationList = data;
-    return this.http.post(`${this.apiUrl}education/`, { education: data });
+    return this.http.post(`${this.apiUrl2}education/`, { education: data });
   }
 
   getEducationList(): any[] {
@@ -146,7 +149,7 @@ export class UserService {
   }
 
   setLanguageList(languages: any[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}languages/`, { languages });
+    return this.http.post(`${this.apiUrl2}languages/`, { languages });
   }
 
   getLanguageList(): any[] {
@@ -155,7 +158,7 @@ export class UserService {
 
   setSkillList(data: any[]): Observable<any> {
     this.SkillList = data;
-    return this.http.post(`${this.apiUrl}skills/`, { skills: data });
+    return this.http.post(`${this.apiUrl2}skills/`, { skills: data });
   }
 
   getSkillList(): any[] {

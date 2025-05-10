@@ -23,8 +23,8 @@ export default class SignUpStudentComponent {
 
   constructor(private fb: FormBuilder, private router: Router, private authService: AuthService){
     this.formRegisterStudent = this.fb.group({
-      email: ['', [Validators.required, hasErrorEmail]],
-      password: ['', [Validators.required, hasErrorPassword]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required],
     }, {validators: this.passwordsMatchValidator});
   }
@@ -60,10 +60,10 @@ export default class SignUpStudentComponent {
       this.authService.registerStudent(email, password).subscribe({
       next: (res) => {
         this.authService.saveUserData(res.access, 'student');
-        this.authService.setLoggedIn(true);
+        console.log('datos a mandar:', res);
         toast.success('Usuario registrado con éxito!');
         // redirige
-        this.router.navigate(['/home']);
+        this.router.navigate(['/auth/login']);
       },
       error: (err) => {
         console.error(err);
