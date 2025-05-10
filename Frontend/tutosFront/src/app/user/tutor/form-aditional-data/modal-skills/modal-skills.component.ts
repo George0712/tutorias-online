@@ -56,18 +56,29 @@ export default class ModalSkillsComponent {
       }
     }
 
+    console.log('Lista de habilidades antes de enviar:', this.skillsList);
     this.isSubmitting = true;
-    this.userService.setSkillList(this.skillsList).subscribe({
-      next: () => {
-        toast.success('Habilidades guardadas exitosamente');
-        this.close();
-      },
-      error: (error) => {
-        console.error('Error al guardar las habilidades:', error);
+
+    // Enviar cada habilidad individualmente
+    const savePromises = this.skillsList.map(skill => 
+      this.userService.setSkillList(skill).toPromise()
+    );
+
+    Promise.all(savePromises)
+      .then(() => {
+        toast.success('Habilidades guardadas correctamente');
+        this.dialogRef.close(this.skillsList);
+      })
+      .catch(error => {
+        console.error('Error al guardar habilidades:', error);
+        if (error.error) {
+          console.error('Detalles del error:', error.error);
+        }
         toast.error('Error al guardar las habilidades');
+      })
+      .finally(() => {
         this.isSubmitting = false;
-      }
-    });
+      });
   }
 
   onAdd(): void {
@@ -75,14 +86,25 @@ export default class ModalSkillsComponent {
       const habilidadSeleccionada = this.habilidades.find(h => h.id == this.skillsForm.value.habilidad)?.name;
       const nivelSeleccionado = this.niveles.find(n => n.id == this.skillsForm.value.nivel)?.name;
 
+      // Verificar si ya existe la habilidad
+      if (this.skillsList.some(skill => skill.name === habilidadSeleccionada)) {
+        toast.error('Esta habilidad ya ha sido agregada');
+        return;
+      }
+
+      // Verificar límite de habilidades
+      if (this.skillsList.length >= 5) {
+        toast.error('Límite de habilidades agregadas');
+        return;
+      }
+
       const nuevaHabilidad = {
-        habilidad: habilidadSeleccionada,
-        nivel: nivelSeleccionado
+        name: habilidadSeleccionada,
+        level: nivelSeleccionado
       };
 
       this.skillsList.push(nuevaHabilidad);
       this.skillsForm.reset({ habilidad: '', nivel: '' });
-      toast.success('Habilidad añadida');
     } else {
       this.markAllAsTouched();
     }

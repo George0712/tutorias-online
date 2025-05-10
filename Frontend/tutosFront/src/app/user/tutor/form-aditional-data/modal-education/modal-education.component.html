@@ -53,8 +53,8 @@
                 <div class="flex gap-4">
                     <!-- Título -->
                     <div class="flex-1">
-                        <select id="degree" formControlName="degree" class="form-input"
-                            [class.border-red-500]="f['degree'].touched && f['degree'].errors">
+                        <select id="title" formControlName="title" class="form-input"
+                            [class.border-red-500]="f['title'].touched && f['title'].errors">
                             <option value="" disabled>Título</option>
                             <option value="Técnico">Técnico</option>
                             <option value="Tecnólogo">Tecnólogo</option>
@@ -70,14 +70,14 @@
 
                     <!-- Especialidad -->
                     <div class="flex-2">
-                        <select id="specialty" formControlName="specialty" class="form-input"
-                            [class.border-red-500]="f['specialty'].touched && f['specialty'].errors">
+                        <select id="specialization" formControlName="specialization" class="form-input"
+                            [class.border-red-500]="f['specialization'].touched && f['specialization'].errors">
                             <option value="" disabled>Especialidad</option>
                             <option value="administracion">Administración</option>
                             <option value="arquitectura">Arquitectura</option>
                             <option value="arte">Arte y Diseño</option>
-                            <option value="ciencias_ambientales">Ciencias Ambientales</option>
-                            <option value="ciencias_politicas">Ciencias Políticas</option>
+                            <option value="ciencias ambientales">Ciencias Ambientales</option>
+                            <option value="ciencias politicas">Ciencias Políticas</option>
                             <option value="comunicacion">Comunicación</option>
                             <option value="contabilidad">Contabilidad</option>
                             <option value="derecho">Derecho</option>
@@ -88,9 +88,9 @@
                             <option value="fisica">Física</option>
                             <option value="gastronomia">Gastronomía</option>
                             <option value="historia">Historia</option>
-                            <option value="ingenieria_civil">Ingeniería Civil</option>
-                            <option value="ingenieria_electrica">Ingeniería Eléctrica</option>
-                            <option value="ingenieria_mecanica">Ingeniería Mecánica</option>
+                            <option value="ingenieria civil">Ingeniería Civil</option>
+                            <option value="ingenieria electrica">Ingeniería Eléctrica</option>
+                            <option value="ingenieria mecanica">Ingeniería Mecánica</option>
                             <option value="ingenieria_quimica">Ingeniería Química</option>
                             <option value="ingenieria_sistemas">Ingeniería de Sistemas</option>
                             <option value="ingenieria_industrial">Ingeniería Industrial</option>
@@ -114,8 +114,8 @@
 
                 <!-- Año de graduación -->
                 <div>
-                    <select id="graduationYear" formControlName="graduationYear" class="form-input"
-                        [class.border-red-500]="f['graduationYear'].touched && f['graduationYear'].errors">
+                    <select id="graduation_year" formControlName="graduation_year" class="form-input"
+                        [class.border-red-500]="f['graduation_year'].touched && f['graduation_year'].errors">
                         <option value="" disabled>Año de graduación</option>
                         <option *ngFor="let year of getGraduationYears()" [value]="year">{{year}}</option>
                     </select>
@@ -134,7 +134,7 @@
                          class="flex justify-between items-center p-2 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors">
                         <div class="flex flex-col">
                             <span class="font-medium text-gray-900">{{education.university}}</span>
-                            <span class="text-sm text-gray-600">{{education.degree}} en {{education.specialty}} ({{education.graduationYear}})</span>
+                            <span class="text-sm text-gray-600">{{education.title}} en {{education.specialization}} ({{education.graduation_year}})</span>
                         </div>
                         <button type="button" 
                                 class="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors"

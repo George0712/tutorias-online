@@ -24,7 +24,7 @@ export default class SignUpTutorComponent {
   constructor(private fb: FormBuilder, private router: Router, private authService: AuthService){
     this.formRegisterTutor = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.maxLength(8)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required],
     }, {validators: this.passwordsMatchValidator});
   }
@@ -55,22 +55,29 @@ export default class SignUpTutorComponent {
 
     try {
       const { email, password } = this.formRegisterTutor.value;
-      if (!email || !password) return;
+      if (!email || !password) {
+        console.log('Email o password faltante');
+        return;
+      }
 
+      console.log('Intentando registrar tutor:', { email });
       this.authService.registerTutor(email, password).subscribe({
-        next: (res) => {
-          this.authService.saveUserData(res.access, 'tutor');
+        next: (response) => {
+          this.authService.saveUserData(response.token, 'tutor');
           toast.success('Usuario registrado con éxito!');
-          // redirige
           this.router.navigate(['/auth/login']);
         },
         error: (err) => {
-          console.error(err);
-          toast.error('Error al registrar el usuario!');
-        },
+          console.error('Error en el registro:', err);
+          if (err.error) {
+            console.error('Detalles del error:', err.error);
+          }
+          toast.error('Error al registrar el usuario: ' + (err.error?.detail || 'Error desconocido'));
+        }
       });
     } catch (error) {
-      toast.error('Error al registrar el usuario!');
+      console.error('Error inesperado:', error);
+      toast.error('Error inesperado al registrar el usuario');
     }
   }
 }

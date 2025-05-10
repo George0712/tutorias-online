@@ -43,7 +43,7 @@
                 <div *ngIf="languagesList.length > 0" class="mt-4 space-y-2">
                     <div *ngFor="let language of languagesList" 
                          class="flex justify-between items-center p-2 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors">
-                        <span class="font-medium text-gray-900">{{language.idioma}} <span class="text-gray-600">({{language.nivel}})</span></span>
+                        <span class="font-medium text-gray-900">{{language.name}} <span class="text-gray-600">({{language.level}})</span></span>
                         <button type="button" 
                                 class="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors"
                                 (click)="removeLanguage(language)">

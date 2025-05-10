@@ -1,8 +1,8 @@
-<div class="flex min-h-screen max-w-6xl mx-auto">
+<div class="flex min-h-screen max-w-6xl mx-auto ">
     <!-- Sidebar Izquierdo -->
     <aside class="min-w-xs p-10 flex flex-col items-center">
         <div class="relative">
-            <img [src]="photo"  alt="Foto de perfil" class="w-24 h-24 rounded-full border border-gray-300 bg-cover object-cover">
+            <img [src]="userPersonalData.photo || '/default-avatar.jpg'"  alt="Foto de perfil" class="w-24 h-24 rounded-full border border-gray-300 bg-cover object-cover">
             <label class="absolute bottom-0 left-16 bg-gray-600 text-white w-7 h-8 rounded-full flex items-center justify-center cursor-pointer">
                 ✏️
                 <input type="file" accept="image/*" class="hidden" (change)="onImageChange($event)">
@@ -16,7 +16,14 @@
         <div class="w-full mt-6">
             <div class="mt-6" *ngIf="role === 'tutor'">
                 <h3 class="font-medium text-lg">IDIOMAS</h3>
-                <p></p>
+                <div class="mt-2 space-y-2">
+                    <div *ngFor="let language of languagesList" class="flex items-center justify-between p-2 rounded-lg">
+                        <div>
+                            <span class="font-medium">{{language.name}}</span>
+                            <span class="text-sm text-gray-600 ml-2">({{language.level}})</span>
+                        </div>
+                    </div>
+                </div>
                 <button (click)="openModal('languaje')" class="w-full bg-[#A62639] cursor-pointer text-white px-4 py-2 rounded-full mt-2 ">Agregar idioma</button>
             </div>
             <div class="mt-6" *ngIf="role === 'tutor'">

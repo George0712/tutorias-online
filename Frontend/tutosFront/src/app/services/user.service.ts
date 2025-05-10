@@ -9,14 +9,12 @@ import { catchError, Observable, throwError } from 'rxjs';
 export class UserService {
   private apiUrl = 'http://127.0.0.1:8000/api/user/';
   private apiUrl2 = 'http://127.0.0.1:8000/api/professional/';
-  private educationList: any[] = [];
-  private languageList: any[] = [];
-  private SkillList: any[] = [];
+  readonly baseUrl = 'http://127.0.0.1:8000';
 
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
-  guardarFoto(file: File): void {
+  guardarFoto(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('photo', file, file.name || 'profile-picture');
 
@@ -24,14 +22,8 @@ export class UserService {
     const headers = new HttpHeaders({
       Authorization: `Token ${token}`
     });
-    this.actualizarSoloFoto(formData, headers).subscribe({
-      next: (response) => {
-        console.log('Foto guardada exitosamente:', response);
-      },
-      error: (error) => {
-        console.error('Error al guardar la foto:', error);
-      },
-    });
+    
+    return this.actualizarSoloFoto(formData, headers);
   }
 
   actualizarSoloFoto(formData: FormData, headers: HttpHeaders): Observable<any> {
@@ -71,8 +63,6 @@ export class UserService {
       console.error('No hay rol disponible');
       return throwError(() => new Error('No hay rol disponible'));
     }
-
-    console.log('Token enviado:', token, 'Rol:', role);
 
     const formData = new FormData();
     formData.append('first_name', data.first_name);
@@ -115,8 +105,6 @@ export class UserService {
       return throwError(() => new Error('No hay token disponible'));
     }
 
-    console.log('Token enviado:', token);
-
     const formData = new FormData();
     formData.append('about_me', data.about_me);
     formData.append('hourly_rate', data.hourly_rate);
@@ -139,29 +127,116 @@ export class UserService {
       );
   }
 
-  setEducationList(data: any[]): Observable<any> {
-    this.educationList = data;
-    return this.http.post(`${this.apiUrl2}education/`, { education: data });
+  setEducationList(data: { 
+    country: string, 
+    university: string, 
+    title: string, 
+    specialization: string, 
+    graduation_year: string 
+  }): Observable<any> {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.error('No hay token disponible');
+      return throwError(() => new Error('No hay token disponible'));
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${token}`,
+    });
+
+    const formData = new FormData();
+    formData.append('country', data.country);
+    formData.append('university', data.university);
+    formData.append('title', data.title);
+    formData.append('specialization', data.specialization);
+    formData.append('graduation_year', data.graduation_year);
+
+    return this.http.post(`${this.apiUrl2}educations/`, formData, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error completo al guardar la educación:', error);
+        if (error.error) {
+          console.error('Detalles del error:', error.error);
+        }
+        return throwError(() => new Error(error));
+      })
+    );
   }
 
-  getEducationList(): any[] {
-    return this.educationList;
+  setLanguageList(data: { name: string, level: string }): Observable<any> {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.error('No hay token disponible');
+      return throwError(() => new Error('No hay token disponible'));
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    const requestBody = {
+      name: data.name,
+      level: data.level
+    };
+
+    return this.http.post(`${this.apiUrl2}languages/`, requestBody, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error completo al guardar el idioma:', error);
+        if (error.error) {
+          console.error('Detalles del error:', error.error);
+        }
+        return throwError(() => new Error(error));
+      })
+    );
   }
 
-  setLanguageList(languages: any[]): Observable<any> {
-    return this.http.post(`${this.apiUrl2}languages/`, { languages });
+  setSkillList(data: { name: string, level: string }): Observable<any> {
+    const token = this.authService.getToken();
+    console.log('Token obtenido:', token);
+
+    if (!token) {
+      console.error('No hay token disponible');
+      return throwError(() => new Error('No hay token disponible'));
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    const requestBody = {
+      name: data.name,
+      level: data.level
+    };
+
+    console.log('Datos a enviar:', requestBody);
+
+    return this.http.post(`${this.apiUrl2}skills/`, requestBody, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error completo al guardar la habilidad:', error);
+        if (error.error) {
+          console.error('Detalles del error:', error.error);
+        }
+        return throwError(() => new Error(error));
+      })
+    );
   }
 
-  getLanguageList(): any[] {
-    return this.languageList;
-  }
-
-  setSkillList(data: any[]): Observable<any> {
-    this.SkillList = data;
-    return this.http.post(`${this.apiUrl2}skills/`, { skills: data });
-  }
-
-  getSkillList(): any[] {
-    return this.SkillList;
+  getImageUrl(path: string): string {
+    if (!path) {
+      return '/default-avatar.jpg';
+    }
+    // ya es una URL absoluta
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    // si viene con una barra al inicio (/media/...):
+    if (path.startsWith('/')) {
+      return `${this.baseUrl}${path}`;
+    }
+    // si viene sin slash (media/...):
+    return `${this.baseUrl}/${path}`;
   }
 }

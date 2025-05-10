@@ -56,17 +56,27 @@ export default class ModalLanguajeComponent {
     }
 
     this.isSubmitting = true;
-    this.userService.setLanguageList(this.languagesList).subscribe({
-      next: () => {
+
+    // Enviar cada idioma individualmente
+    const savePromises = this.languagesList.map(language => 
+      this.userService.setLanguageList(language).toPromise()
+    );
+
+    Promise.all(savePromises)
+      .then(() => {
         toast.success('Idiomas guardados correctamente');
         this.dialogRef.close(this.languagesList);
-      },
-      error: (error) => {
+      })
+      .catch(error => {
         console.error('Error al guardar idiomas:', error);
+        if (error.error) {
+          console.error('Detalles del error:', error.error);
+        }
         toast.error('Error al guardar los idiomas');
+      })
+      .finally(() => {
         this.isSubmitting = false;
-      }
-    });
+      });
   }
 
   onAdd(): void {
@@ -74,9 +84,21 @@ export default class ModalLanguajeComponent {
       const idiomaSeleccionado = this.idiomas.find(i => i.id == this.languageForm.value.idioma)?.name;
       const nivelSeleccionado = this.niveles.find(n => n.id == this.languageForm.value.nivel)?.name;
 
+      // Verificar si ya existe el idioma
+      if (this.languagesList.some(lang => lang.name === idiomaSeleccionado)) {
+        toast.error('Este idioma ya ha sido agregado');
+        return;
+      }
+
+      // Verificar límite de idiomas
+      if (this.languagesList.length >= 3) {
+        toast.error('Límite de idiomas agregados');
+        return;
+      }
+
       const nuevoIdioma = {
-        idioma: idiomaSeleccionado,
-        nivel: nivelSeleccionado
+        name: idiomaSeleccionado,
+        level: nivelSeleccionado
       };
 
       this.languagesList.push(nuevoIdioma);
@@ -88,7 +110,7 @@ export default class ModalLanguajeComponent {
 
   removeLanguage(languageToRemove: any): void {
     this.languagesList = this.languagesList.filter(lang =>
-      lang.idioma !== languageToRemove.idioma || lang.nivel !== languageToRemove.nivel
+      lang.name !== languageToRemove.name || lang.level !== languageToRemove.level
     );
   }
 

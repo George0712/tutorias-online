@@ -28,6 +28,7 @@ export default class ProfileUserComponent implements OnInit {
   userPersonalData: any = {};
   userAditionalData: any = {};
   role: string = '';
+  languagesList: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -65,32 +66,45 @@ export default class ProfileUserComponent implements OnInit {
   onImageChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      // Guardamos el archivo directamente en el formulario
       const file = input.files[0];
       this.profileForm.get('photo')?.setValue(file);
 
-      // Opcional: Mostrar la imagen de vista previa en el componente (en base64)
+      // Mostrar vista previa temporal
       const reader = new FileReader();
       reader.onload = (e) => {
-        console.log('Vista previa base64:', this.photo);
         this.photo = (e.target?.result as string) || '/default-avatar.jpg';
-        this.Service.guardarFoto(file);
       };
       reader.readAsDataURL(file);
+
+      // Guardar la foto en el backend
+      this.Service.guardarFoto(file).subscribe({
+        next: (response: { photo: string }) => {
+          console.log('Foto guardada exitosamente:', response);
+          // Actualizar la URL de la imagen con la respuesta del servidor
+          if (response.photo) {
+            this.photo = this.Service.getImageUrl(response.photo);
+          }
+        },
+        error: (error: any) => {
+          console.error('Error al guardar la foto:', error);
+          toast.error('Error al guardar la foto');
+        }
+      });
     }
   }
 
   getUserPersonalData(): void {
-    this.Service.getUserPersonalData().subscribe(
-      (data) => {
+    this.Service.getUserPersonalData().subscribe({
+      next: (data) => {
         this.userPersonalData = data;
-        console.log('Datos personales:', data);
-        this.photo = data.profile_picture || '/default-avatar.jpg';
+        this.photo = this.Service.getImageUrl(data.photo);
+        console.log('URL de la imagen:', this.photo);
       },
-      (error) => {
+      error: (error) => {
         console.error('Error al obtener los datos personales:', error);
+        toast.error('Error al cargar los datos del perfil');
       }
-    );
+    });
   }
 
   onSubmit(): void {
@@ -113,7 +127,11 @@ export default class ProfileUserComponent implements OnInit {
       };
 
       this.Service.SavePersonalData(dataToSend).subscribe({
-        next: () => {
+        next: (res) => {
+          if (res.photo) {
+            this.photo = this.Service.getImageUrl(res.photo);
+            this.userPersonalData.photo = res.photo;
+          }
           toast.success('Información guardada correctamente.');
         },
         error: (err) => {
@@ -128,6 +146,13 @@ export default class ProfileUserComponent implements OnInit {
   }
 
   onSubmitAdicional(): void {
+    if (!this.authService.isAuthenticated()) {
+      console.error('Usuario no autenticado');
+      toast.error('Debes iniciar sesión para realizar esta acción');
+      this.route.navigate(['/auth/login']);
+      return;
+    }
+
     if (this.profileAdicionalForm.invalid) {
       this.markAllAsTouched();
       return;
@@ -142,7 +167,6 @@ export default class ProfileUserComponent implements OnInit {
         modality: formValues.modality,
       };
 
-      console.log('datos a enviar:', dataToSend);
       this.Service.SaveAdditionalData(dataToSend).subscribe({
         next: () => {
           toast.success('Información guardada correctamente.');
@@ -179,9 +203,14 @@ export default class ProfileUserComponent implements OnInit {
   openModal(type: 'languaje' | 'education' | 'skills'): void {
     switch(type) {
       case 'languaje':
-        this.dialog.open(ModalLanguajeComponent, {
+        const dialogRef = this.dialog.open(ModalLanguajeComponent, {
           width: '500px',
           disableClose: true
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.languagesList = result;
+          }
         });
         break;
       case 'education':
@@ -197,5 +226,11 @@ export default class ProfileUserComponent implements OnInit {
         });
         break;
     }
+  }
+
+  removeLanguage(language: any): void {
+    this.languagesList = this.languagesList.filter(lang =>
+      lang.name !== language.name || lang.level !== language.level
+    );
   }
 }
