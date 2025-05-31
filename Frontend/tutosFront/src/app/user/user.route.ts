@@ -37,38 +37,7 @@ export const UserRoutes: Routes = [
             loadComponent: () =>
               import('./tutor/home-panel/home-panel.component'),
             canActivate: [authGuard],
-          },
-          {
-            path: 'form-aditional-data',
-            loadComponent: () =>
-              import(
-                './tutor/form-aditional-data/form-aditional-data.component'
-              ),
-            canActivate: [authGuard],
-            children: [
-              {
-                path: 'form-education-data',
-                loadComponent: () =>
-                  import(
-                    './tutor/form-aditional-data/modal-education/modal-education.component'
-                  ),
-              },
-              {
-                path: 'form-skills-data',
-                loadComponent: () =>
-                  import(
-                    './tutor/form-aditional-data/modal-skills/modal-skills.component'
-                  ),
-              },
-              {
-                path: 'form-language-data',
-                loadComponent: () =>
-                  import(
-                    './tutor/form-aditional-data/modal-languaje/modal-languaje.component'
-                  ),
-              },
-            ],
-          },
+          }
         ],
       },
     ],
