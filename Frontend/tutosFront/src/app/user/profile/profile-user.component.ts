@@ -75,7 +75,7 @@ export default class ProfileUserComponent implements OnInit {
         this.photo = (e.target?.result as string) || '/default-avatar.jpg';
       };
       reader.readAsDataURL(file);
-
+      
       // Guardar la foto en el backend
       this.Service.guardarFoto(file).subscribe({
         next: (response: { photo: string }) => {

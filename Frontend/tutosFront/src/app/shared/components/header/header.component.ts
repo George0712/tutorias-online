@@ -68,7 +68,7 @@ export class HeaderComponent implements OnDestroy {
       next: data => {
         this.userPersonalData = data;
         // Asegurar que usamos el campo correcto de tu API, p.e. 'photo' o 'profile_picture'
-        this.photo = this.Service.getImageUrl(data.photo);
+        this.photo = this.Service.getImageUrl(data.photo) + '?t=' + new Date().getTime();
         this.cdr.markForCheck();
       },
       error: error => {

@@ -3,7 +3,6 @@ import { CardTutorComponent } from '../../shared/components/Cards/CardTutor/card
 import { TutorService, Tutor } from '../../services/tutor.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -23,18 +22,32 @@ export default class HomeComponent implements OnInit {
   maxPrice: number | null = null;
   isOnline: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private tutorService: TutorService,
+  ) {}
 
   ngOnInit() {
-    // Prevenir la recarga si ya estamos en home
-    if (this.router.url === '/') {
-      this.router.navigate(['/'], { skipLocationChange: true });
-    }
+    this.loadTutors();
+  }
+
+  loadTutors() {
+    this.loading = true;
+    this.tutorService.getAllTutors().subscribe({
+      next: (tutors) => {
+        this.tutors = tutors;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar los tutores:', error);
+        this.loading = false;
+      }
+    });
   }
 
   onSearch() {
     if (this.searchTerm.trim()) {
       console.log('Búsqueda:', this.searchTerm, 'Ubicación:', this.selectedLocation);
+      // TODO: Implementar búsqueda de tutores
     }
   }
 

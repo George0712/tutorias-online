@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReviewComponent } from '../../../shared/components/review/review.component';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-detailtutor',
@@ -11,9 +12,13 @@ import { ReviewComponent } from '../../../shared/components/review/review.compon
   styleUrl: './detail-tutor.component.css'
 })
 export default class DetailtutorComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   navigateToLogin() {
-    this.router.navigate(['/auth/login']);
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/user/profile']);
+    } else {
+      this.router.navigate(['/auth/login']);
+    }
   }
 }

@@ -8,6 +8,7 @@ interface LoginResponse {
   role: string;
   has_personal_data: boolean;
   has_professional_data: boolean;
+  is_first_login: boolean;
 }
 
 @Injectable({
@@ -54,7 +55,8 @@ export class AuthService {
           response.token,
           response.role,
           response.has_personal_data,
-          response.has_professional_data
+          response.has_professional_data,
+          response.is_first_login
         );
       })
     );
@@ -72,7 +74,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}register/tutor/`, { email, password });
   }
   
-  saveUserData(token: string, role: string, hasPersonalData?: boolean, hasProfessionalData?: boolean) {
+  saveUserData(token: string, role: string, hasPersonalData?: boolean, hasProfessionalData?: boolean, isFirstLogin?: boolean) {
     if (!this.isBrowser) return;
 
     localStorage.setItem('token', token);
@@ -84,6 +86,10 @@ export class AuthService {
 
     if (hasProfessionalData !== undefined && role === 'tutor') {
       localStorage.setItem('hasProfessionalData', String(hasProfessionalData));
+    }
+
+    if (isFirstLogin !== undefined) {
+      localStorage.setItem('firstLogin', String(isFirstLogin));
     }
   }
 
@@ -107,6 +113,11 @@ export class AuthService {
   
   isAuthenticated(): boolean {
     return this.checkInitialAuthState();
+  }
+
+  isFirstLogin(): boolean {
+    if (!this.isBrowser) return false;
+    return localStorage.getItem('isFirstLogin') === 'true';
   }
   
   logout() {
