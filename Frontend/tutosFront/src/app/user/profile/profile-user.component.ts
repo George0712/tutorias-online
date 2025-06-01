@@ -49,7 +49,7 @@ export default class ProfileUserComponent implements OnInit {
 
     this.profileAdicionalForm = this.fb.group({
       about_me: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(500)]],
-      hourly_rate: ['', [Validators.required, Validators.min(10000), Validators.max(1000000)]],
+      fee_per_hour: ['', [Validators.required, Validators.min(10000), Validators.max(1000000)]],
       modality: ['', Validators.required],
     });
   }
@@ -75,7 +75,7 @@ export default class ProfileUserComponent implements OnInit {
         this.photo = (e.target?.result as string) || '/default-avatar.jpg';
       };
       reader.readAsDataURL(file);
-
+      
       // Guardar la foto en el backend
       this.Service.guardarFoto(file).subscribe({
         next: (response: { photo: string }) => {
@@ -163,7 +163,7 @@ export default class ProfileUserComponent implements OnInit {
 
       const dataToSend = {
         about_me: formValues.about_me,
-        hourly_rate: formValues.hourly_rate,
+        fee_per_hour: formValues.fee_per_hour,
         modality: formValues.modality,
       };
 

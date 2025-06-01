@@ -6,12 +6,6 @@ export const UserRoutes: Routes = [
     path: 'user',
     children: [
       {
-        path: 'form-personal-data',
-        loadComponent: () =>
-          import('./form-personal-data/form-personal-data.component'),
-        canActivate: [authGuard]
-      },
-      {
         path: 'profile',
         loadComponent: () =>
           import('./profile/profile-user.component'),
@@ -37,7 +31,8 @@ export const UserRoutes: Routes = [
             loadComponent: () =>
               import('./tutor/home-panel/home-panel.component'),
             canActivate: [authGuard],
-          }
+          },
+          
         ],
       },
     ],

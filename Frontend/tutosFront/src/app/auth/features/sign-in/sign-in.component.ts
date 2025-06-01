@@ -13,7 +13,11 @@ import { toast } from 'ngx-sonner';
 export default class SignInComponent {
   signInForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder, 
+    private router: Router, 
+    private authService: AuthService
+  ) {
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
@@ -26,8 +30,9 @@ export default class SignInComponent {
     try {
       const { email, password } = this.signInForm.value;
       this.authService.login(email, password).subscribe({
-        next: (res) => {
+        next: () => {
           this.authService.setLoggedIn(true);
+          
           toast.success('¡Bienvenido de nuevo!');
           this.router.navigate(['/home']);
         },

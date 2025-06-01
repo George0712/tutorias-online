@@ -1,9 +1,9 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CardTutorComponent } from '../../shared/components/Cards/CardTutor/cardtutor.component';
-import { TutorService, Tutor } from '../../services/tutor.service';
+import { TutorPersonalService, TutorProfessionalService, TutorPersonal, TutorProfessional } from '../../services/tutor.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +14,8 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export default class HomeComponent implements OnInit {
-  tutors: Tutor[] = [];
+  tutorsPersonal: TutorPersonal[] = [];
+  tutorsProfessional: TutorProfessional[] = [];
   loading = false;
   searchTerm: string = '';
   selectedLocation: string = 'default';
@@ -23,18 +24,37 @@ export default class HomeComponent implements OnInit {
   maxPrice: number | null = null;
   isOnline: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private tutorPersonalService: TutorPersonalService,
+    private tutorProfessionalService: TutorProfessionalService
+  ) {}
 
   ngOnInit() {
-    // Prevenir la recarga si ya estamos en home
-    if (this.router.url === '/') {
-      this.router.navigate(['/'], { skipLocationChange: true });
-    }
+    this.loadTutors();
+  }
+
+  loadTutors() {
+    this.loading = true;
+    forkJoin({
+      personal: this.tutorPersonalService.getAllTutors(),
+      professional: this.tutorProfessionalService.getAllTutors()
+    }).subscribe({
+      next: (data) => {
+        this.tutorsPersonal = data.personal;
+        this.tutorsProfessional = data.professional;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar los tutores:', error);
+        this.loading = false;
+      }
+    });
   }
 
   onSearch() {
     if (this.searchTerm.trim()) {
       console.log('Búsqueda:', this.searchTerm, 'Ubicación:', this.selectedLocation);
+      // TODO: Implementar búsqueda de tutores
     }
   }
 
