@@ -2,55 +2,76 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
 
-export interface Tutor {
+export interface TutorPersonal {
   id: number;
   first_name: string;
   last_name: string;
   photo: string;
   location: string;
-  modality: string;
-  hourly_rate: number;
   rating: number;
   subjects: string[];
-  about_you: string;
+}
+
+export interface TutorProfessional {
+  id: number;
+  modality: string;
+  fee_per_hour: number;
+  about_me: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class TutorService {
-  private apiUrl = 'http://127.0.0.1:8000/api/professional/';
+export class TutorPersonalService {
+  private apiUrl = 'http://127.0.0.1:8000/api/user/';
 
   constructor(private http: HttpClient) {}
 
-  getAllTutors(): Observable<Tutor[]> {
-    return this.http.get<any>(`${this.apiUrl}profile/tutor/`).pipe(
+  getAllTutors(): Observable<TutorPersonal[]> {
+    return this.http.get<any>(`${this.apiUrl}public/tutors/`).pipe(
       map(response => {
-        console.log('Respuesta del servidor:', response); // Debug
         if (Array.isArray(response)) {
-          return response.map((tutor: any) => this.mapTutorData(tutor));
+          return response.map((tutor: any) => ({
+            id: tutor?.id || 0,
+            first_name: tutor?.first_name || tutor?.user?.first_name || '',
+            last_name: tutor?.last_name || tutor?.user?.last_name || '',
+            photo: tutor?.photo || tutor?.user?.photo || '/default-avatar.jpg',
+            location: tutor?.location || 'No especificado',
+            rating: tutor?.rating || 0,
+            subjects: Array.isArray(tutor?.subjects) ? tutor.subjects : []
+          }));
         }
         if (response?.results && Array.isArray(response.results)) {
-          return response.results.map((tutor: any) => this.mapTutorData(tutor));
-        }
-        if (response && typeof response === 'object') {
-          return [this.mapTutorData(response)];
+          return response.results.map((tutor: any) => ({
+            id: tutor?.id || 0,
+            first_name: tutor?.first_name || tutor?.user?.first_name || '',
+            last_name: tutor?.last_name || tutor?.user?.last_name || '',
+            photo: tutor?.photo || tutor?.user?.photo || '/default-avatar.jpg',
+            location: tutor?.location || 'No especificado',
+            rating: tutor?.rating || 0,
+            subjects: Array.isArray(tutor?.subjects) ? tutor.subjects : []
+          }));
         }
         return [];
       }),
       catchError(error => {
-        console.error('Error al obtener tutores:', error);
+        console.error('Error al obtener información personal:', error);
         return of([]);
       })
     );
   }
 
-  getTutorById(id: number): Observable<Tutor> {
-    return this.http.get<any>(`${this.apiUrl}profile/tutor/${id}/`).pipe(
-      map(response => {
-        console.log('Respuesta del tutor:', response); // Debug
-        return this.mapTutorData(response);
-      }),
+  getTutorById(id: number): Observable<TutorPersonal> {
+    return this.http.get<any>(`${this.apiUrl}public/tutors/${id}/`).pipe(
+      map(response => ({
+        id: response?.id || 0,
+        first_name: response?.first_name || response?.user?.first_name || '',
+        last_name: response?.last_name || response?.user?.last_name || '',
+        photo: response?.photo || response?.user?.photo || '/default-avatar.jpg',
+        location: response?.location || 'No especificado',
+        rating: response?.rating || 0,
+        subjects: Array.isArray(response?.subjects) ? response.subjects : []
+      })),
       catchError(error => {
         console.error('Error al obtener tutor:', error);
         return of(this.getDefaultTutor());
@@ -58,34 +79,76 @@ export class TutorService {
     );
   }
 
-  private mapTutorData(data: any): Tutor {
-    console.log('Mapeando datos del tutor:', data); // Debug
-    return {
-      id: data?.id || 0,
-      first_name: data?.first_name || data?.user?.first_name || '',
-      last_name: data?.last_name || data?.user?.last_name || '',
-      photo: data?.photo || data?.user?.photo || '/default-avatar.jpg',
-      location: data?.location || 'No especificada',
-      modality: data?.modality || 'No especificada',
-      hourly_rate: data?.hourly_rate || 0,
-      rating: data?.rating || 0,
-      subjects: Array.isArray(data?.subjects) ? data.subjects : [],
-      about_you: data?.about_you || ''
-    };
-  }
-
-  private getDefaultTutor(): Tutor {
+  private getDefaultTutor(): TutorPersonal {
     return {
       id: 0,
       first_name: '',
       last_name: '',
       photo: 'assets/images/default-avatar.png',
       location: 'No especificada',
-      modality: 'No especificada',
-      hourly_rate: 0,
       rating: 0,
-      subjects: [],
-      about_you: ''
+      subjects: []
+    };
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TutorProfessionalService {
+  private apiUrl = 'http://127.0.0.1:8000/api/professional/';
+
+  constructor(private http: HttpClient) {}
+
+  getAllTutors(): Observable<TutorProfessional[]> {
+    return this.http.get<any>(`${this.apiUrl}profile/`).pipe(
+      map(response => {
+        if (Array.isArray(response)) {
+          return response.map((tutor: any) => ({
+            id: tutor?.id || 0,
+            modality: tutor?.modality || 'No especificada',
+            fee_per_hour: tutor?.fee_per_hour || 0,
+            about_me: tutor?.about_me || ''
+          }));
+        }
+        if (response?.results && Array.isArray(response.results)) {
+          return response.results.map((tutor: any) => ({
+            id: tutor?.id || 0,
+            modality: tutor?.modality || 'No especificada',
+            fee_per_hour: tutor?.fee_per_hour || 0,
+            about_me: tutor?.about_me || ''
+          }));
+        }
+        return [];
+      }),
+      catchError(error => {
+        console.error('Error al obtener información profesional:', error);
+        return of([]);
+      })
+    );
+  }
+
+  getTutorById(id: number): Observable<TutorProfessional> {
+    return this.http.get<any>(`${this.apiUrl}profile/tutor/${id}/`).pipe(
+      map(response => ({
+        id: response?.id || 0,
+        modality: response?.modality || 'No especificada',
+        fee_per_hour: response?.fee_per_hour || 0,
+        about_me: response?.about_me || ''
+      })),
+      catchError(error => {
+        console.error('Error al obtener tutor:', error);
+        return of(this.getDefaultTutor());
+      })
+    );
+  }
+
+  private getDefaultTutor(): TutorProfessional {
+    return {
+      id: 0,
+      modality: 'No especificada',
+      fee_per_hour: 0,
+      about_me: ''
     };
   }
 } 

@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Tutor } from '../../../../services/tutor.service';
+import { TutorPersonal, TutorProfessional } from '../../../../services/tutor.service';
 
 @Component({
   selector: 'app-card-tutor',
@@ -11,11 +11,12 @@ import { Tutor } from '../../../../services/tutor.service';
   styleUrl: './cardtutor.component.css'
 })
 export class CardTutorComponent {
-  @Input() tutor!: Tutor;
+  @Input() tutorPersonal!: TutorPersonal;
+  @Input() tutorProfessional!: TutorProfessional;
 
   constructor(private router: Router) {}
 
   toDetailsTutor() {
-    this.router.navigate(['/user/student/details-tutor', this.tutor.id]);
+    this.router.navigate(['/user/student/details-tutor', this.tutorPersonal.id]);
   }
 }

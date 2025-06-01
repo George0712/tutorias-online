@@ -107,7 +107,7 @@ export class UserService {
 
     const formData = new FormData();
     formData.append('about_me', data.about_me);
-    formData.append('hourly_rate', data.hourly_rate);
+    formData.append('fee_per_hour', data.fee_per_hour);
     formData.append('modality', data.modality);
 
     const headers = new HttpHeaders({

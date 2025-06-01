@@ -127,13 +127,17 @@
     </div>
 
     <!-- Mensaje de no resultados -->
-    <div *ngIf="!loading && tutors.length === 0" class="text-center py-12">
+    <div *ngIf="!loading && tutorsPersonal.length === 0" class="text-center py-12">
       <p class="text-gray-600">No se encontraron tutores disponibles.</p>
     </div>
 
     <!-- Grid de tutores -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <app-card-tutor *ngFor="let tutor of tutors" [tutor]="tutor"></app-card-tutor>
+      <app-card-tutor 
+        *ngFor="let tutor of tutorsPersonal; let i = index" 
+        [tutorPersonal]="tutor"
+        [tutorProfessional]="tutorsProfessional[i]">
+      </app-card-tutor>
     </div>
   </section>
 

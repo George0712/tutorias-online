@@ -1,8 +1,9 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CardTutorComponent } from '../../shared/components/Cards/CardTutor/cardtutor.component';
-import { TutorService, Tutor } from '../../services/tutor.service';
+import { TutorPersonalService, TutorProfessionalService, TutorPersonal, TutorProfessional } from '../../services/tutor.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,8 @@ import { FormsModule } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export default class HomeComponent implements OnInit {
-  tutors: Tutor[] = [];
+  tutorsPersonal: TutorPersonal[] = [];
+  tutorsProfessional: TutorProfessional[] = [];
   loading = false;
   searchTerm: string = '';
   selectedLocation: string = 'default';
@@ -23,7 +25,8 @@ export default class HomeComponent implements OnInit {
   isOnline: boolean = false;
 
   constructor(
-    private tutorService: TutorService,
+    private tutorPersonalService: TutorPersonalService,
+    private tutorProfessionalService: TutorProfessionalService
   ) {}
 
   ngOnInit() {
@@ -32,9 +35,13 @@ export default class HomeComponent implements OnInit {
 
   loadTutors() {
     this.loading = true;
-    this.tutorService.getAllTutors().subscribe({
-      next: (tutors) => {
-        this.tutors = tutors;
+    forkJoin({
+      personal: this.tutorPersonalService.getAllTutors(),
+      professional: this.tutorProfessionalService.getAllTutors()
+    }).subscribe({
+      next: (data) => {
+        this.tutorsPersonal = data.personal;
+        this.tutorsProfessional = data.professional;
         this.loading = false;
       },
       error: (error) => {
