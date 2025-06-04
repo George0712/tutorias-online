@@ -8,8 +8,13 @@ export interface TutorPersonal {
   last_name: string;
   photo: string;
   location: string;
-  rating: number;
   subjects: string[];
+  rating: number;
+}
+
+export interface TutorSkill {
+  name: string;
+  level: string;
 }
 
 export interface TutorProfessional {
@@ -24,6 +29,7 @@ export interface TutorProfessional {
 })
 export class TutorPersonalService {
   private apiUrl = 'http://127.0.0.1:8000/api/user/';
+  private professionalApiUrl = 'http://127.0.0.1:8000/api/professional/';
 
   constructor(private http: HttpClient) {}
 
@@ -37,8 +43,8 @@ export class TutorPersonalService {
             last_name: tutor?.last_name || tutor?.user?.last_name || '',
             photo: tutor?.photo || tutor?.user?.photo || '/default-avatar.jpg',
             location: tutor?.location || 'No especificado',
-            rating: tutor?.rating || 0,
-            subjects: Array.isArray(tutor?.subjects) ? tutor.subjects : []
+            subjects: tutor?.subjects || [],
+            rating: tutor?.rating || 0
           }));
         }
         if (response?.results && Array.isArray(response.results)) {
@@ -48,8 +54,8 @@ export class TutorPersonalService {
             last_name: tutor?.last_name || tutor?.user?.last_name || '',
             photo: tutor?.photo || tutor?.user?.photo || '/default-avatar.jpg',
             location: tutor?.location || 'No especificado',
-            rating: tutor?.rating || 0,
-            subjects: Array.isArray(tutor?.subjects) ? tutor.subjects : []
+            subjects: tutor?.subjects || [],
+            rating: tutor?.rating || 0
           }));
         }
         return [];
@@ -57,6 +63,34 @@ export class TutorPersonalService {
       catchError(error => {
         console.error('Error al obtener información personal:', error);
         return of([]);
+      })
+    );
+  }
+
+  getTutorSkills(tutorId: number): Observable<TutorSkill[]> {
+    return this.http.get<any>(`${this.professionalApiUrl}skills/${tutorId}/`).pipe(
+      map(response => {
+        if (Array.isArray(response)) {
+          return response.map((skill: any) => ({
+            name: skill?.name || '',
+            level: skill?.level || ''
+          }));
+        }
+        return [];
+      }),
+      catchError(error => {
+        console.error('Error al obtener habilidades:', error);
+        return of([]);
+      })
+    );
+  }
+
+  getTutorRating(tutorId: number): Observable<number> {
+    return this.http.get<any>(`${this.professionalApiUrl}rating/${tutorId}/`).pipe(
+      map(response => response?.rating || 0),
+      catchError(error => {
+        console.error('Error al obtener rating:', error);
+        return of(0);
       })
     );
   }
@@ -69,8 +103,8 @@ export class TutorPersonalService {
         last_name: response?.last_name || response?.user?.last_name || '',
         photo: response?.photo || response?.user?.photo || '/default-avatar.jpg',
         location: response?.location || 'No especificado',
-        rating: response?.rating || 0,
-        subjects: Array.isArray(response?.subjects) ? response.subjects : []
+        subjects: response?.subjects || [],
+        rating: response?.rating || 0
       })),
       catchError(error => {
         console.error('Error al obtener tutor:', error);
@@ -86,8 +120,8 @@ export class TutorPersonalService {
       last_name: '',
       photo: 'assets/images/default-avatar.png',
       location: 'No especificada',
-      rating: 0,
-      subjects: []
+      subjects: [],
+      rating: 0
     };
   }
 }
