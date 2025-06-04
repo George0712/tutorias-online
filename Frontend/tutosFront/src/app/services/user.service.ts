@@ -50,6 +50,26 @@ export class UserService {
     );
   }
 
+  getUserAditionalData(): Observable<any> {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.error('No hay token disponible');
+      return throwError(() => new Error('No hay token disponible'));
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Token ${token}`,
+    });
+
+    return this.http.get<any>(`${this.apiUrl2}profile/`, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error al obtener los datos adicionales:', error);
+        return throwError(() => new Error(error.message || 'Error desconocido'));
+      })
+    );
+  }
+
   SavePersonalData(data: any): Observable<any> {
     const token = this.authService.getToken();
     const role = this.authService.getRole();

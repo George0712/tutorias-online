@@ -49,7 +49,7 @@ export default class ProfileUserComponent implements OnInit {
 
     this.profileAdicionalForm = this.fb.group({
       about_me: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(500)]],
-      fee_per_hour: ['', [Validators.required, Validators.min(10000), Validators.max(1000000)]],
+      fee_per_hour: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
       modality: ['', Validators.required],
     });
   }
@@ -57,10 +57,13 @@ export default class ProfileUserComponent implements OnInit {
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
       this.getUserPersonalData();
+      this.getUserAditionalData();
       this.role = this.authService.getRole() || '';
     } else {
       this.route.navigate(['/visitor']);
     }
+    console.log('userPersonalData', this.userPersonalData);
+    console.log('userAditionalData', this.userAditionalData);
   }
 
   onImageChange(event: Event): void {
@@ -98,10 +101,29 @@ export default class ProfileUserComponent implements OnInit {
       next: (data) => {
         this.userPersonalData = data;
         this.photo = this.Service.getImageUrl(data.photo);
+        this.profileForm.patchValue(this.userPersonalData);
         console.log('URL de la imagen:', this.photo);
       },
       error: (error) => {
         console.error('Error al obtener los datos personales:', error);
+        toast.error('Error al cargar los datos del perfil');
+      }
+    });
+  }
+
+  getUserAditionalData(): void {
+    this.Service.getUserAditionalData().subscribe({
+      next: (data) => {
+        this.userAditionalData = data;
+        this.profileAdicionalForm.patchValue({
+          about_me: this.userAditionalData.about_me,
+          fee_per_hour: this.userAditionalData.fee_per_hour,
+          modality: this.userAditionalData.modality
+        });
+        console.log('Datos adicionales:', this.userAditionalData);
+      },
+      error: (error) => {
+        console.error('Error al obtener los datos adicionales:', error);
         toast.error('Error al cargar los datos del perfil');
       }
     });
