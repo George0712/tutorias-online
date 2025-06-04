@@ -67,7 +67,7 @@ class ProfessionalProfile(models.Model):
     )
     status        = models.BooleanField(default=True)
     about_me      = models.TextField(blank=True, null=True)
-    fee_per_hour  = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    fee_per_hour  = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     modality      = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
