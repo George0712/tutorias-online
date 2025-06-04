@@ -11,9 +11,9 @@ export class NavigationService {
     private authService: AuthService
   ) {}
 
-  navigateToTutorDetails() {
+  navigateToTutorDetails(tutorId: number) {
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/user/student/details-tutor']);
+      this.router.navigate(['/user/student/details-tutor', tutorId]);
     } else {
       this.router.navigate(['/auth/login']);
     }

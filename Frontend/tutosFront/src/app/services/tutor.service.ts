@@ -10,6 +10,12 @@ export interface TutorPersonal {
   location: string;
   subjects: string[];
   rating: number;
+  reviews: {
+    name: string;
+    rating: number;
+    date: string;
+    comment: string;
+  }[];
 }
 
 export interface TutorSkill {
@@ -22,6 +28,15 @@ export interface TutorProfessional {
   modality: string;
   fee_per_hour: number;
   about_me: string;
+}
+
+export interface TutorEducation {
+  id: number;
+  country: string;
+  university: string;
+  title: string;
+  specialization: string;
+  graduation_year: string;
 }
 
 @Injectable({
@@ -104,7 +119,8 @@ export class TutorPersonalService {
         photo: response?.photo || response?.user?.photo || '/default-avatar.jpg',
         location: response?.location || 'No especificado',
         subjects: response?.subjects || [],
-        rating: response?.rating || 0
+        rating: response?.rating || 0,
+        reviews: response?.reviews || []
       })),
       catchError(error => {
         console.error('Error al obtener tutor:', error);
@@ -121,7 +137,8 @@ export class TutorPersonalService {
       photo: 'assets/images/default-avatar.png',
       location: 'No especificada',
       subjects: [],
-      rating: 0
+      rating: 0,
+      reviews: []
     };
   }
 }
@@ -173,6 +190,28 @@ export class TutorProfessionalService {
       catchError(error => {
         console.error('Error al obtener tutor:', error);
         return of(this.getDefaultTutor());
+      })
+    );
+  }
+
+  getTutorEducation(tutorId: number): Observable<TutorEducation[]> {
+    return this.http.get<any>(`${this.apiUrl}educations/${tutorId}/`).pipe(
+      map(response => {
+        if (Array.isArray(response)) {
+          return response.map((education: any) => ({
+            id: education?.id || 0,
+            country: education?.country || '',
+            university: education?.university || '',
+            title: education?.title || '',
+            specialization: education?.specialization || '',
+            graduation_year: education?.graduation_year || ''
+          }));
+        }
+        return [];
+      }),
+      catchError(error => {
+        console.error('Error al obtener educación:', error);
+        return of([]);
       })
     );
   }

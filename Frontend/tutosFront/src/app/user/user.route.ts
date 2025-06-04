@@ -16,7 +16,7 @@ export const UserRoutes: Routes = [
         path: 'student',
         children: [
           {
-            path: 'details-tutor',
+            path: 'details-tutor/:id',
             loadComponent: () =>
               import('./student/detail-tutor/detail-tutor.component'),
           }
