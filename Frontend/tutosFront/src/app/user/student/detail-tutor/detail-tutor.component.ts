@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ReviewComponent } from '../../../shared/components/review/review.component';
 import { AuthService } from '../../../services/auth.service';
 import { TutorPersonalService, TutorProfessionalService, TutorPersonal, TutorProfessional, TutorSkill, TutorEducation } from '../../../services/tutor.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-detailtutor',
@@ -24,7 +25,8 @@ export default class DetailtutorComponent implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService,
     private tutorPersonalService: TutorPersonalService,
-    private tutorProfessionalService: TutorProfessionalService
+    private tutorProfessionalService: TutorProfessionalService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -54,14 +56,14 @@ export default class DetailtutorComponent implements OnInit {
     );
 
     // Cargar habilidades
-    this.tutorPersonalService.getTutorSkills(tutorId).subscribe(
+    this.userService.getUserSkillsById(tutorId).subscribe(
       skills => {
         this.tutorSkills = skills;
       }
     );
 
     // Cargar educación
-    this.tutorProfessionalService.getTutorEducation(tutorId).subscribe(
+    this.userService.getUserEducation().subscribe(
       education => {
         this.tutorEducation = education;
         this.loading = false;

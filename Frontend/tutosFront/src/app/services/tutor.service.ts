@@ -19,6 +19,7 @@ export interface TutorPersonal {
 }
 
 export interface TutorSkill {
+  id: number;
   name: string;
   level: string;
 }
@@ -77,24 +78,6 @@ export class TutorPersonalService {
       }),
       catchError(error => {
         console.error('Error al obtener información personal:', error);
-        return of([]);
-      })
-    );
-  }
-
-  getTutorSkills(tutorId: number): Observable<TutorSkill[]> {
-    return this.http.get<any>(`${this.professionalApiUrl}skills/${tutorId}/`).pipe(
-      map(response => {
-        if (Array.isArray(response)) {
-          return response.map((skill: any) => ({
-            name: skill?.name || '',
-            level: skill?.level || ''
-          }));
-        }
-        return [];
-      }),
-      catchError(error => {
-        console.error('Error al obtener habilidades:', error);
         return of([]);
       })
     );
@@ -180,7 +163,7 @@ export class TutorProfessionalService {
   }
 
   getTutorById(id: number): Observable<TutorProfessional> {
-    return this.http.get<any>(`${this.apiUrl}profile/tutor/${id}/`).pipe(
+    return this.http.get<any>(`${this.apiUrl}profile/${id}/`).pipe(
       map(response => ({
         id: response?.id || 0,
         modality: response?.modality || 'No especificada',
@@ -190,28 +173,6 @@ export class TutorProfessionalService {
       catchError(error => {
         console.error('Error al obtener tutor:', error);
         return of(this.getDefaultTutor());
-      })
-    );
-  }
-
-  getTutorEducation(tutorId: number): Observable<TutorEducation[]> {
-    return this.http.get<any>(`${this.apiUrl}educations/${tutorId}/`).pipe(
-      map(response => {
-        if (Array.isArray(response)) {
-          return response.map((education: any) => ({
-            id: education?.id || 0,
-            country: education?.country || '',
-            university: education?.university || '',
-            title: education?.title || '',
-            specialization: education?.specialization || '',
-            graduation_year: education?.graduation_year || ''
-          }));
-        }
-        return [];
-      }),
-      catchError(error => {
-        console.error('Error al obtener educación:', error);
-        return of([]);
       })
     );
   }

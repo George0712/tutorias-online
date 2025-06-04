@@ -49,7 +49,7 @@ export default class ProfileUserComponent implements OnInit {
 
     this.profileAdicionalForm = this.fb.group({
       about_me: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(500)]],
-      fee_per_hour: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
+      fee_per_hour: ['', [Validators.required, Validators.min(10000), Validators.max(1000000)]],
       modality: ['', Validators.required],
     });
   }
@@ -168,41 +168,45 @@ export default class ProfileUserComponent implements OnInit {
   }
 
   onSubmitAdicional(): void {
-    if (!this.authService.isAuthenticated()) {
-      console.error('Usuario no autenticado');
-      toast.error('Debes iniciar sesión para realizar esta acción');
-      this.route.navigate(['/auth/login']);
-      return;
-    }
-
     if (this.profileAdicionalForm.invalid) {
       this.markAllAsTouched();
       return;
     }
 
-    try {
-      const formValues = this.profileAdicionalForm.value;
+    const formValues = this.profileAdicionalForm.value;
+    const dataToSend = {
+      about_me: formValues.about_me,
+      fee_per_hour: formValues.fee_per_hour,
+      modality: formValues.modality,
+    };
 
-      const dataToSend = {
-        about_me: formValues.about_me,
-        fee_per_hour: formValues.fee_per_hour,
-        modality: formValues.modality,
-      };
-
-      this.Service.SaveAdditionalData(dataToSend).subscribe({
+    if (this.userAditionalData && this.userAditionalData.id) {
+      // ——> Ya existe un registro, lo actualizo:
+      this.Service.updateAdditionalData(this.userAditionalData.id, dataToSend).subscribe({
         next: () => {
-          toast.success('Información guardada correctamente.');
+          toast.success('Datos adicionales actualizados correctamente');
         },
         error: (err) => {
-          console.error('Error al guardar información:', err);
-          toast.error('Hubo un problema al guardar la información.');
+          console.error('Error al actualizar datos adicionales:', err);
+          toast.error('Hubo un problema al actualizar los datos adicionales');
         },
       });
-    } catch (error) {
-      console.error('Error inesperado:', error);
-      toast.error('Hubo un problema inesperado al guardar la información.');
+    } else {
+      // ——> No existía, hago POST para crear:
+      this.Service.createAdditionalData(dataToSend).subscribe({
+        next: (created) => {
+          toast.success('Datos adicionales guardados correctamente');
+          // Al guardarlo, guardo el ID para futuros PUT/PATCH:
+          this.userAditionalData = created;
+        },
+        error: (err) => {
+          console.error('Error al guardar datos adicionales:', err);
+          toast.error('Hubo un problema al guardar los datos adicionales');
+        },
+      });
     }
   }
+
 
   // Marcar todos los campos como touched para mostrar errores
   private markAllAsTouched(): void {

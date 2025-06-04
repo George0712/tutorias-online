@@ -117,9 +117,12 @@ export class UserService {
       );
   }
 
-  SaveAdditionalData(data: any): Observable<any> {
+  createAdditionalData(data: {
+    about_me: string;
+    fee_per_hour: string;
+    modality: string;
+  }): Observable<any> {
     const token = this.authService.getToken();
-
     if (!token) {
       console.error('No hay token disponible');
       return throwError(() => new Error('No hay token disponible'));
@@ -139,13 +142,48 @@ export class UserService {
       .pipe(
         catchError((error) => {
           console.error(
-            'Error en la petición al guardar los datos adicionales:',
+            'Error en la petición al crear los datos adicionales:',
             error
           );
           return throwError(() => new Error(error));
         })
       );
   }
+
+
+  updateAdditionalData(
+    id: number,
+    data: { about_me: string; fee_per_hour: string; modality: string }
+  ): Observable<any> {
+    const token = this.authService.getToken();
+    if (!token) {
+      console.error('No hay token disponible');
+      return throwError(() => new Error('No hay token disponible'));
+    }
+
+    const formData = new FormData();
+    formData.append('about_me', data.about_me);
+    formData.append('fee_per_hour', data.fee_per_hour);
+    formData.append('modality', data.modality);
+
+    const headers = new HttpHeaders({
+      Authorization: `Token ${token}`,
+    });
+
+    // IMPORTANTE: Apuntar a /profile/{id}/ cuando se actualiza
+    return this.http
+      .put(`${this.apiUrl2}profile/${id}/`, formData, { headers })
+      .pipe(
+        catchError((error) => {
+          console.error(
+            'Error en la petición al actualizar los datos adicionales:',
+            error
+          );
+          return throwError(() => new Error(error));
+        })
+      );
+  }
+
 
   setEducationList(data: { 
     country: string, 
@@ -258,5 +296,58 @@ export class UserService {
     }
     // si viene sin slash (media/...):
     return `${this.baseUrl}/${path}`;
+  }
+
+  getUserEducation(): Observable<any> {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.error('No hay token disponible');
+      return throwError(() => new Error('No hay token disponible'));
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Token ${token}`,
+    });
+
+    return this.http.get<any>(`${this.apiUrl2}educations/`, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error al obtener la educación:', error);
+        return throwError(() => new Error(error.message || 'Error desconocido'));
+      })
+    );
+  }
+
+  getUserSkills(): Observable<any> {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      console.error('No hay token disponible');
+      return throwError(() => new Error('No hay token disponible'));
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Token ${token}`,
+    });
+
+    return this.http.get<any>(`${this.apiUrl2}skills/`, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error al obtener las habilidades:', error);
+        return throwError(() => new Error(error.message || 'Error desconocido'));
+      })
+    );
+  }
+
+  getUserSkillsById(userId: number): Observable<any> {
+    const token = this.authService.getToken();
+    if (!token) return throwError(() => new Error('No hay token disponible'));
+  
+    const headers = new HttpHeaders({
+      Authorization: `Token ${token}`,
+    });
+  
+    return this.http.get<any>(`${this.apiUrl2}skills/?user_id=${userId}`, { headers }).pipe(
+      catchError(error => throwError(() => new Error(error.message || 'Error desconocido')))
+    );
   }
 }

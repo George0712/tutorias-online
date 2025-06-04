@@ -7,7 +7,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start gap-6">
             <div class="flex-1">
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">{{tutorPersonal.first_name}} {{tutorPersonal.last_name}}</h1>
-                <p *ngIf="tutorEducation.length > 0" class="text-gray-600 mb-4">{{tutorEducation[0].title}}</p>
+                <p *ngIf="tutorEducation.length > 0" class="text-gray-600 mb-4">{{tutorEducation[0].title}} - {{tutorEducation[0].specialization}}</p>
                 <div class="flex flex-wrap gap-2">
                     <span *ngFor="let skill of tutorSkills" class="px-4 py-2 bg-[#A62639]/10 text-[#A62639] rounded-full text-sm">
                         {{skill.name}} ({{skill.level}})
@@ -116,23 +116,16 @@
     </div>
 
     <!-- Experiencia y Habilidades -->
-    <div class="bg-white p-6 mb-6">
+    <div *ngIf="!loading && tutorSkills.length > 0" class="bg-white p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
             <i class="fa fa-briefcase text-[#A62639] mr-2"></i>
             EXPERIENCIA Y HABILIDADES
         </h2>
         <div class="space-y-4">
-            <div class="flex items-start">
+            <div *ngFor="let skills of tutorSkills" class="flex items-start">
                 <div class="w-2 h-2 rounded-full bg-[#A62639] mt-2 mr-3"></div>
-                <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-            <div class="flex items-start">
-                <div class="w-2 h-2 rounded-full bg-[#A62639] mt-2 mr-3"></div>
-                <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-            <div class="flex items-start">
-                <div class="w-2 h-2 rounded-full bg-[#A62639] mt-2 mr-3"></div>
-                <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p class="text-gray-800 font-medium">{{skills.name}}</p>
+                <p class="text-gray-600">{{skills.level}}</p>
             </div>
         </div>
     </div>
