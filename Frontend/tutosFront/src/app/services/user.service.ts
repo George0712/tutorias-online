@@ -346,7 +346,7 @@ export class UserService {
       Authorization: `Token ${token}`,
     });
   
-    return this.http.get<any>(`${this.apiUrl2}skills/?user_id=${userId}`, { headers }).pipe(
+    return this.http.get<any>(`${this.apiUrl2}skills/${userId}`, { headers }).pipe(
       catchError(error => throwError(() => new Error(error.message || 'Error desconocido')))
     );
   }

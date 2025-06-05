@@ -1,1 +1,153 @@
-<p>cardcategory works!</p>
+<!-- <div class="flex min-h-screen max-w-6xl mx-auto ">
+    Sidebar Izquierdo 
+    <aside class="min-w-xs p-10 flex flex-col items-center">
+        <div class="relative">
+            <img [src]="userPersonalData.photo || '/default-avatar.jpg'"  alt="Foto de perfil" class="w-24 h-24 rounded-full border border-gray-300 bg-cover object-cover">
+            <label class="absolute bottom-0 left-16 bg-gray-600 text-white w-7 h-8 rounded-full flex items-center justify-center cursor-pointer">
+                ✏️
+                <input type="file" accept="image/*" class="hidden" (change)="onImageChange($event)">
+            </label>
+        </div>
+        <p class="mt-2 text-sm">Foto de perfil</p>
+
+        <button class="w-full bg-gray-600 cursor-pointer text-white px-4 py-2 rounded-full mt-4 ">Cambiar contraseña</button>
+        <button class="w-full bg-[#A62639] cursor-pointer text-white px-4 py-2 rounded-full mt-2 ">Verificar perfil</button>
+
+        <div class="w-full mt-6">
+            <div class="mt-6" *ngIf="role === 'tutor'">
+                <h3 class="font-medium text-lg">IDIOMAS</h3>
+                <div class="mt-2 space-y-2">
+                    <div *ngFor="let language of languagesList" class="flex items-center justify-between p-2 rounded-lg">
+                        <div>
+                            <span class="font-medium">{{language.name}}</span>
+                            <span class="text-sm text-gray-600 ml-2">({{language.level}})</span>
+                        </div>
+                    </div>
+                </div>
+                <button (click)="openModal('languaje')" class="w-full bg-[#A62639] cursor-pointer text-white px-4 py-2 rounded-full mt-2 ">Agregar idioma</button>
+            </div>
+            <div class="mt-6" *ngIf="role === 'tutor'">
+                <h3 class="font-medium text-lg">EDUCACIÓN</h3>
+                <p></p>
+                <button (click)="openModal('education')" class="w-full bg-[#A62639] cursor-pointer text-white px-4 py-2 rounded-full mt-2 ">Agregar Educación</button>
+                        
+            </div>
+            <div class="mt-6" *ngIf="role === 'tutor'">
+                <h3 class="font-medium text-lg">HABILIDADES</h3>
+                <p></p>
+                <button (click)="openModal('skills')" class="w-full bg-[#A62639] cursor-pointer text-white px-4 py-2 rounded-full mt-2 ">Agregar Habilidades</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Contenido Principal 
+    <main class="w-full flex flex-col p-10">
+        <h2 class="text-xl font-bold mb-4">INFORMACIÓN GENERAL</h2>
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                    <input type="text" formControlName="first_name" class="w-full px-4 py-2 border rounded-3xl outline-none" [(ngModel)]="userPersonalData.first_name"
+                        [class.border-red-500]="f['first_name'].touched && f['first_name'].errors">
+                    <div *ngIf="f['first_name'].touched && f['first_name'].errors" class="text-red-500 text-xs mt-1">
+                        <div *ngIf="f['first_name'].errors?.['required']">El nombre es requerido</div>
+                        <div *ngIf="f['first_name'].errors?.['minlength']">Mínimo 2 caracteres</div>
+                        <div *ngIf="f['first_name'].errors?.['maxlength']">Máximo 50 caracteres</div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
+                    <input type="text" formControlName="last_name" class="w-full px-4 py-2 border rounded-3xl outline-none" [(ngModel)]="userPersonalData.last_name"
+                        [class.border-red-500]="f['last_name'].touched && f['last_name'].errors">
+                    <div *ngIf="f['last_name'].touched && f['last_name'].errors" class="text-red-500 text-xs mt-1">
+                        <div *ngIf="f['last_name'].errors?.['required']">El apellido es requerido</div>
+                        <div *ngIf="f['last_name'].errors?.['minlength']">Mínimo 2 caracteres</div>
+                        <div *ngIf="f['last_name'].errors?.['maxlength']">Máximo 50 caracteres</div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Documento de identidad</label>
+                    <input type="text" formControlName="id_number" class="w-full px-4 py-2 border rounded-3xl outline-none" [(ngModel)]="userPersonalData.id_number"
+                        [class.border-red-500]="f['id_number'].touched && f['id_number'].errors">
+                    <div *ngIf="f['id_number'].touched && f['id_number'].errors" class="text-red-500 text-xs mt-1">
+                        <div *ngIf="f['id_number'].errors?.['required']">El documento es requerido</div>
+                        <div *ngIf="f['id_number'].errors?.['pattern']">Formato inválido (8-12 dígitos)</div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ubicación</label>
+                    <select formControlName="location" class="w-full px-4 py-2 border rounded-3xl outline-none" [(ngModel)]="userPersonalData.location"
+                        [class.border-red-500]="f['location'].touched && f['location'].errors">
+                        <option value="">País</option>
+                        <option value="col">Colombia</option>
+                    </select>
+                    <div *ngIf="f['location'].touched && f['location'].errors" class="text-red-500 text-xs mt-1">
+                        <div *ngIf="f['location'].errors?.['required']">La ubicación es requerida</div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
+                    <input type="date" formControlName="birthdate" class="w-full px-4 py-2 border rounded-3xl outline-none" [(ngModel)]="userPersonalData.birthdate"
+                        [class.border-red-500]="f['birthdate'].touched && f['birthdate'].errors">
+                    <div *ngIf="f['birthdate'].touched && f['birthdate'].errors" class="text-red-500 text-xs mt-1">
+                        <div *ngIf="f['birthdate'].errors?.['required']">La fecha de nacimiento es requerida</div>
+                        <div *ngIf="f['birthdate'].errors?.['birthdate']">Formato de fecha inválido</div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Número de celular</label>
+                    <input type="tel" formControlName="number_phone" class="w-full px-4 py-2 border rounded-full outline-none" [(ngModel)]="userPersonalData.number_phone"
+                        [class.border-red-500]="f['number_phone'].touched && f['number_phone'].errors">
+                    <div *ngIf="f['number_phone'].touched && f['number_phone'].errors"
+                        class="text-red-500 text-xs mt-1">
+                        <div *ngIf="f['number_phone'].errors?.['required']">El teléfono es requerido</div>
+                        <div *ngIf="f['number_phone'].errors?.['pattern']">Formato inválido (9-15 dígitos)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="md:col-span-2 flex justify-end mt-10">
+                <button type="submit" class="bg-[#A62639] text-white cursor-pointer px-10 py-3 rounded-3xl font-['quicksand'] font-medium text-sm hover:bg-[#511C29] transition flex items-center justify-center">
+                    Actualizar
+                </button>
+            </div>
+
+        </form>
+        <div *ngIf="role === 'tutor'">
+            <h2 class="text-xl font-bold mt-10 mb-4">INFORMACIÓN ADICIONAL</h2>
+            <form [formGroup]="profileAdicionalForm" (ngSubmit)="onSubmitAdicional()">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Acerca de ti</label>
+                        <textarea
+                            formControlName="about_me"
+                            class="w-full max-h-52 p-2 border border-gray-300 rounded-3xl focus:outline-none">
+                        </textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Tarifa por hora</label>
+                        <div class="w-full flex border border-gray-300 rounded-full p-2">
+                            <span class="mr-2 text-gray-500">$</span>
+                            <input type="text" formControlName="fee_per_hour" class="w-full outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Modalidad</label>
+                        <select formControlName="modality" class="w-full border border-gray-300 rounded-full p-2 outline-none">
+                            <option value="">Selecciona una modalidad</option>
+                            <option value="presencial">Presencial</option>
+                            <option value="virtual">Virtual</option>
+                            <option value="hibrida">Híbrida</option>
+                        </select>
+                    </div>
+                </div>
+        
+                <div class="md:col-span-2 flex justify-end mt-10">
+                    <button type="submit" class="bg-[#A62639] text-white cursor-pointer px-10 py-3 rounded-3xl font-['quicksand'] font-medium text-sm hover:bg-[#511C29] transition flex items-center justify-center">
+                        Actualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div> 
+-->
