@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { ReviewComponent } from '../../../shared/components/review/review.component';
 import { AuthService } from '../../../services/auth.service';
 import { TutorPersonalService, TutorProfessionalService, TutorPersonal, TutorProfessional, TutorSkill, TutorEducation } from '../../../services/tutor.service';
-import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-detailtutor',
@@ -25,8 +24,7 @@ export default class DetailtutorComponent implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService,
     private tutorPersonalService: TutorPersonalService,
-    private tutorProfessionalService: TutorProfessionalService,
-    private userService: UserService
+    private tutorProfessionalService: TutorProfessionalService
   ) {}
 
   ngOnInit() {
@@ -40,10 +38,12 @@ export default class DetailtutorComponent implements OnInit {
 
   private loadTutorData(tutorId: number) {
     this.loading = true;
+    console.log('Cargando datos del tutor:', tutorId);
     
     // Cargar información personal
     this.tutorPersonalService.getTutorById(tutorId).subscribe(
       personalData => {
+        console.log('Datos personales cargados:', personalData);
         this.tutorPersonal = personalData;
       }
     );
@@ -51,21 +51,28 @@ export default class DetailtutorComponent implements OnInit {
     // Cargar información profesional
     this.tutorProfessionalService.getTutorById(tutorId).subscribe(
       professionalData => {
+        console.log('Datos profesionales cargados:', professionalData);
         this.tutorProfessional = professionalData;
       }
     );
 
     // Cargar habilidades
-    this.userService.getUserSkillsById(tutorId).subscribe(
+    this.tutorProfessionalService.getTutorSkills(tutorId).subscribe(
       skills => {
+        console.log('Habilidades cargadas:', skills);
         this.tutorSkills = skills;
       }
     );
 
-    // Cargar educación
-    this.userService.getUserEducation().subscribe(
+    // Cargar educación del tutor
+    this.tutorProfessionalService.getTutorEducation(tutorId).subscribe(
       education => {
+        console.log('Educación cargada:', education);
         this.tutorEducation = education;
+        this.loading = false;
+      },
+      error => {
+        console.error('Error al cargar educación:', error);
         this.loading = false;
       }
     );
@@ -74,6 +81,14 @@ export default class DetailtutorComponent implements OnInit {
   navigateToLogin() {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/user/profile']);
+    } else {
+      this.router.navigate(['/auth/login']);
+    }
+  }
+
+  navigateToBooking() {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/user/student/booking', this.tutorPersonal?.id]);
     } else {
       this.router.navigate(['/auth/login']);
     }

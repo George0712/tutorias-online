@@ -21,9 +21,15 @@ class LanguageViewSet(viewsets.ModelViewSet):
         return tutor
 
     def get_queryset(self):
-        if self.action in ['list', 'retrieve']:
-            return Language.objects.all()
-        return Language.objects.filter(tutor=self.get_tutor())
+        queryset = Language.objects.all()
+        tutor_id = self.request.query_params.get('tutor', None)
+        
+        if tutor_id:
+            queryset = queryset.filter(tutor_id=tutor_id)
+        elif self.request.user.is_authenticated:
+            queryset = queryset.filter(tutor=self.get_tutor())
+            
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(tutor=self.get_tutor())

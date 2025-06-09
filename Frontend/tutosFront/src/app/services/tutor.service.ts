@@ -124,6 +124,18 @@ export class TutorPersonalService {
       reviews: []
     };
   }
+
+  deleteTutorLanguage(tutorId: number, languageId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}languages/${languageId}/?tutor=${tutorId}`);
+  }
+
+  deleteTutorEducation(tutorId: number, educationId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}educations/${educationId}/?tutor=${tutorId}`);
+  }
+
+  deleteTutorSkill(tutorId: number, skillId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}skills/${skillId}/?tutor=${tutorId}`);
+  }
 }
 
 @Injectable({
@@ -173,6 +185,47 @@ export class TutorProfessionalService {
       catchError(error => {
         console.error('Error al obtener tutor:', error);
         return of(this.getDefaultTutor());
+      })
+    );
+  }
+
+  getTutorSkills(tutorId: number): Observable<TutorSkill[]> {
+    return this.http.get<any>(`${this.apiUrl}skills/?tutor=${tutorId}`).pipe(
+      map(response => {
+        if (Array.isArray(response)) {
+          return response.map((skill: any) => ({
+            id: skill?.id || 0,
+            name: skill?.name || '',
+            level: skill?.level || ''
+          }));
+        }
+        return [];
+      }),
+      catchError(error => {
+        console.error('Error al obtener skills del tutor:', error);
+        return of([]);
+      })
+    );
+  }
+
+  getTutorEducation(tutorId: number): Observable<TutorEducation[]> {
+    return this.http.get<any>(`${this.apiUrl}educations/?tutor=${tutorId}`).pipe(
+      map(response => {
+        if (Array.isArray(response)) {
+          return response.map((education: any) => ({
+            id: education?.id || 0,
+            country: education?.country || '',
+            university: education?.university || '',
+            title: education?.title || '',
+            specialization: education?.specialization || '',
+            graduation_year: education?.graduation_year || ''
+          }));
+        }
+        return [];
+      }),
+      catchError(error => {
+        console.error('Error al obtener educación del tutor:', error);
+        return of([]);
       })
     );
   }

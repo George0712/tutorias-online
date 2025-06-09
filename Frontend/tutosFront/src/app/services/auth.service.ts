@@ -48,21 +48,6 @@ export class AuthService {
     return !!(token && role);
   }
 
-  private getUserIdFromToken(): number | null {
-    if (!this.isBrowser) return null;
-    
-    const token = localStorage.getItem('token');
-    if (!token) return null;
-
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.user_id;
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      return null;
-    }
-  }
-
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}login/`, { email, password }).pipe(
       tap(response => {
@@ -124,10 +109,6 @@ export class AuthService {
   getToken(): string | null {
     if (!this.isBrowser) return null;
     return localStorage.getItem('token');
-  }
-
-  getUserId(): number | null {
-    return this.getUserIdFromToken();
   }
   
   isAuthenticated(): boolean {

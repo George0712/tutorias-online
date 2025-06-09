@@ -14,8 +14,6 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import ModalLanguajeComponent from '../tutor/form-aditional-data/modal-languaje/modal-languaje.component';
 import ModalEducationComponent from '../tutor/form-aditional-data/modal-education/modal-education.component';
 import ModalSkillsComponent from '../tutor/form-aditional-data/modal-skills/modal-skills.component';
-import { ProfileService } from '../../services/profile.service';
-import { TutorPersonal } from '../../services/tutor.service';
 
 interface UserPersonalData {
   first_name: string;
@@ -28,6 +26,7 @@ interface UserPersonalData {
 }
 
 interface TutorAdditionalInfo {
+  id?: number;
   about_me: string;
   fee_per_hour: number;
   modality: string;
@@ -63,436 +62,338 @@ interface Skill {
   styleUrl: './profile-user.component.css',
 })
 export default class ProfileUserComponent implements OnInit {
-  profileForm!: FormGroup;
-  profileAdicionalForm!: FormGroup;
-  
-  userPersonalData: UserPersonalData = {
-    first_name: '',
-    last_name: '',
-    id_number: '',
-    location: '',
-    birthdate: '',
-    number_phone: '',
-    photo: ''
-  };
-  
-  tutorAdditionalInfo: TutorAdditionalInfo = {
-    about_me: '',
-    fee_per_hour: 0,
-    modality: ''
-  };
-  
+  profileForm: FormGroup;
+  profileAdicionalForm: FormGroup;
+  photo: string = '/default-avatar.jpg';
+  userPersonalData: UserPersonalData = {} as UserPersonalData;
+  userAditionalData: TutorAdditionalInfo = {} as TutorAdditionalInfo;
+  role: string = '';
   languagesList: Language[] = [];
   educationList: Education[] = [];
   skillsList: Skill[] = [];
-  
-  role: string = 'tutor'; // Esto debería venir del servicio de autenticación
-  isLoadingAdditional: boolean = false;
-  isLoadingPersonal: boolean = false;
-  tutorId: number | null = null;
-  
-  // Modal state
-  isModalOpen: boolean = false;
-  modalType: string = '';
-  modalForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private profileService: ProfileService,
-    private userService: UserService,
-    private authService: AuthService
+    private route: Router,
+    private Service: UserService,
+    private authService: AuthService,
+    private dialog: MatDialog
   ) {
-    this.initializeForms();
-  }
-
-  ngOnInit(): void {
-    // Obtener el rol del usuario desde el servicio de autenticación
-    this.role = this.authService.getRole() || 'tutor';
-    
-    // Obtener el ID del tutor desde el servicio de autenticación
-    this.tutorId = this.authService.getUserId();
-    
-    this.loadUserData();
-    if (this.role === 'tutor' && this.tutorId) {
-      this.loadTutorAdditionalData();
-    }
-  }
-
-  initializeForms(): void {
     this.profileForm = this.fb.group({
       first_name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       last_name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      id_number: ['', [Validators.required, Validators.pattern(/^\d{8,12}$/)]],
+      id_number: [ '', [Validators.required, Validators.pattern(/^[0-9]{8,12}$/)]],
       location: ['', Validators.required],
-      birthdate: ['', Validators.required],
-      number_phone: ['', [Validators.required, Validators.pattern(/^\d{9,15}$/)]]
+      birthdate: ['', [Validators.pattern(/^\d{4}-\d{2}-\d{2}$/)]],
+      number_phone: ['', [Validators.required, Validators.pattern(/^[0-9]{9,15}$/)]],
+      photo: [''],
     });
 
     this.profileAdicionalForm = this.fb.group({
-      about_me: ['', [Validators.maxLength(1000)]],
-      fee_per_hour: ['', [Validators.min(10000)]],
-      modality: ['']
-    });
-
-    this.initializeModalForm();
-  }
-
-  initializeModalForm(): void {
-    this.modalForm = this.fb.group({
-      // Para idiomas
-      language_name: [''],
-      language_level: [''],
-      
-      // Para educación
-      institution: [''],
-      degree: [''],
-      field_of_study: [''],
-      start_date: [''],
-      end_date: [''],
-      is_current: [false],
-      description: [''],
-      
-      // Para habilidades
-      skill_name: [''],
-      skill_level: ['']
+      about_me: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(500)]],
+      fee_per_hour: ['', [Validators.required, Validators.min(10000), Validators.max(1000000)]],
+      modality: ['', Validators.required],
     });
   }
 
-  get f() {
-    return this.profileForm.controls;
+  ngOnInit(): void {
+    if (this.authService.isAuthenticated()) {
+      this.getUserPersonalData();
+      this.getUserAditionalData();
+      this.role = this.authService.getRole() || '';
+      if (this.role === 'tutor') {
+        this.loadLanguages();
+        this.loadEducation();
+        this.loadSkills();
+      }
+    } else {
+      this.route.navigate(['/visitor']);
+    }
+    console.log('userPersonalData', this.userPersonalData);
+    console.log('userAditionalData', this.userAditionalData);
   }
 
-  get fa() {
-    return this.profileAdicionalForm.controls;
+  onImageChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.profileForm.get('photo')?.setValue(file);
+
+      // Mostrar vista previa temporal
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.photo = (e.target?.result as string) || '/default-avatar.jpg';
+      };
+      reader.readAsDataURL(file);
+      
+      // Guardar la foto en el backend
+      this.Service.guardarFoto(file).subscribe({
+        next: (response: { photo: string }) => {
+          console.log('Foto guardada exitosamente:', response);
+          // Actualizar la URL de la imagen con la respuesta del servidor
+          if (response.photo) {
+            this.photo = this.Service.getImageUrl(response.photo);
+          }
+        },
+        error: (error: any) => {
+          console.error('Error al guardar la foto:', error);
+          toast.error('Error al guardar la foto');
+        }
+      });
+    }
   }
 
-  loadUserData(): void {
-    // Usar el ProfileService en lugar del UserService para consistencia
-    this.userService.getUserPersonalData().subscribe({
+  getUserPersonalData(): void {
+    this.Service.getUserPersonalData().subscribe({
       next: (data) => {
-        console.log('User profile data loaded:', data);
         this.userPersonalData = data;
-        this.profileForm.patchValue(data);
+        this.photo = this.Service.getImageUrl(data.photo);
+        this.profileForm.patchValue(this.userPersonalData);
+        console.log('URL de la imagen:', this.photo);
       },
       error: (error) => {
-        console.error('Error loading user data:', error);
-        toast.error('Error al cargar los datos del usuario');
+        console.error('Error al obtener los datos personales:', error);
+        toast.error('Error al cargar los datos del perfil');
       }
     });
   }
 
-  loadTutorAdditionalData(): void {
-    if (!this.tutorId) return;
-
-    // Cargar información adicional
-    this.profileService.getTutorAdditionalInfo(this.tutorId).subscribe({
+  getUserAditionalData(): void {
+    this.Service.getUserAditionalData().subscribe({
       next: (data) => {
-        console.log('Additional info loaded:', data);
-        this.tutorAdditionalInfo = data;
-        // Patchear el formulario con los datos recibidos
-        this.profileAdicionalForm.patchValue({
-          about_me: data.about_me || '',
-          fee_per_hour: data.fee_per_hour || 0,
-          modality: data.modality || ''
-        });
+        console.log('Respuesta completa de datos adicionales:', data);
+        // Si la respuesta es un array, tomamos el primer elemento
+        this.userAditionalData = Array.isArray(data) ? data[0] : data;
+        console.log('Datos adicionales procesados:', this.userAditionalData);
+        console.log('ID del perfil:', this.userAditionalData?.id);
+        
+        if (this.userAditionalData) {
+          this.profileAdicionalForm.patchValue({
+            about_me: this.userAditionalData.about_me || '',
+            fee_per_hour: this.userAditionalData.fee_per_hour || '',
+            modality: this.userAditionalData.modality || ''
+          });
+          console.log('Formulario actualizado con valores:', this.profileAdicionalForm.value);
+        } else {
+          console.log('No se encontraron datos adicionales');
+        }
       },
       error: (error) => {
-        console.error('Error loading additional info:', error);
-        if (error.status !== 404) {
-          toast.error('Error al cargar la información adicional');
-        }
-      }
-    });
-
-    // Cargar idiomas del usuario actual
-    this.profileService.getTutorLanguages(this.tutorId).subscribe({
-      next: (data) => {
-        console.log('Languages loaded:', data);
-        this.languagesList = data;
-      },
-      error: (error) => {
-        console.error('Error loading languages:', error);
-        if (error.status !== 404) {
-          toast.error('Error al cargar los idiomas');
-        }
-      }
-    });
-
-    // Cargar educación del usuario actual
-    this.profileService.getTutorEducation(this.tutorId).subscribe({
-      next: (data) => {
-        console.log('Education loaded:', data);
-        this.educationList = data;
-      },
-      error: (error) => {
-        console.error('Error loading education:', error);
-        if (error.status !== 404) {
-          toast.error('Error al cargar la educación');
-        }
-      }
-    });
-
-    // Cargar habilidades del usuario actual
-    this.profileService.getTutorSkills(this.tutorId).subscribe({
-      next: (data) => {
-        console.log('Skills loaded:', data);
-        this.skillsList = data;
-      },
-      error: (error) => {
-        console.error('Error loading skills:', error);
-        if (error.status !== 404) {
-          toast.error('Error al cargar las habilidades');
-        }
+        console.error('Error al obtener los datos adicionales:', error);
+        toast.error('Error al cargar los datos del perfil');
       }
     });
   }
 
   onSubmit(): void {
-    if (this.profileForm.valid) {
-      this.isLoadingPersonal = true;
-      
-      const formData = { ...this.profileForm.value };
-      
-      this.profileService.updateUserProfile(formData).subscribe({
-        next: (response) => {
-          toast.success('Perfil actualizado correctamente');
-          this.userPersonalData = { ...this.userPersonalData, ...formData };
-          this.isLoadingPersonal = false;
+    if (this.profileForm.invalid) {
+      this.markAllAsTouched();
+      return;
+    }
+
+    try {
+      const formValues = this.profileForm.value;
+
+      const dataToSend = {
+        first_name: formValues.first_name,
+        last_name: formValues.last_name,
+        id_number: formValues.id_number,
+        location: formValues.location,
+        birthdate: formValues.birthdate,
+        number_phone: formValues.number_phone,
+        photo: this.profileForm.get('photo')?.value || null,
+      };
+
+      this.Service.SavePersonalData(dataToSend).subscribe({
+        next: (res) => {
+          if (res.photo) {
+            this.photo = this.Service.getImageUrl(res.photo);
+            this.userPersonalData.photo = res.photo;
+          }
+          toast.success('Información guardada correctamente.');
         },
-        error: (error) => {
-          console.error('Error updating profile:', error);
-          toast.error('Error al actualizar el perfil');
-          this.isLoadingPersonal = false;
-        }
+        error: (err) => {
+          console.error('Error al guardar información:', err);
+          toast.error('Hubo un problema al guardar la información.');
+        },
       });
-    } else {
-      this.markFormGroupTouched(this.profileForm);
+    } catch (error) {
+      console.error('Error inesperado:', error);
+      toast.error('Hubo un problema inesperado al guardar la información.');
     }
   }
 
   onSubmitAdicional(): void {
-    if (this.profileAdicionalForm.valid && this.tutorId) {
-      this.isLoadingAdditional = true;
-      
-      const formData = { ...this.profileAdicionalForm.value };
-      
-      this.profileService.updateTutorAdditionalInfo(this.tutorId, formData).subscribe({
-        next: (response) => {
-          this.tutorAdditionalInfo = response;
-          this.isLoadingAdditional = false;
-          toast.success('Información adicional actualizada exitosamente');
-        },
-        error: (error) => {
-          console.error('Error updating additional info:', error);
-          this.isLoadingAdditional = false;
-          toast.error('Error al actualizar la información adicional');
-        }
-      });
-    }
-  }
-
-  onImageChange(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      // Validar tipo de archivo
-      if (!file.type.startsWith('image/')) {
-        toast.error('Por favor selecciona un archivo de imagen válido');
-        return;
-      }
-      
-      // Validar tamaño de archivo (por ejemplo, máximo 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('La imagen debe ser menor a 5MB');
-        return;
-      }
-
-      this.profileService.uploadProfileImage(file).subscribe({
-        next: (response) => {
-          this.userPersonalData.photo = response.photo_url;
-          toast.success('Foto de perfil actualizada');
-        },
-        error: (error) => {
-          console.error('Error uploading image:', error);
-          toast.error('Error al subir la imagen');
-        }
-      });
-    }
-  }
-
-  openModal(type: string): void {
-    this.modalType = type;
-    this.isModalOpen = true;
-    this.modalForm.reset();
+    console.log('Se envió el formulario adicional');
+    console.log('Estado del formulario:', this.profileAdicionalForm.status);
+    console.log('Errores del formulario:', this.profileAdicionalForm.errors);
+    console.log('Valores del formulario:', this.profileAdicionalForm.value);
     
-    // Configurar validadores según el tipo de modal
-    this.configureModalValidators(type);
-  }
+    if (this.profileAdicionalForm.invalid) {
+      console.log('Formulario inválido');
+      this.markAllAsTouched();
+      return;
+    }
 
-  closeModal(): void {
-    this.isModalOpen = false;
-    this.modalType = '';
-    this.modalForm.reset();
-  }
+    const formValues = this.profileAdicionalForm.value;
+    console.log('Valores del formulario:', formValues);
 
-  configureModalValidators(type: string): void {
-    // Limpiar todos los validadores
-    Object.keys(this.modalForm.controls).forEach(key => {
-      this.modalForm.get(key)?.clearValidators();
-      this.modalForm.get(key)?.updateValueAndValidity();
+    const dataToSend = {
+      about_me: formValues.about_me,
+      fee_per_hour: formValues.fee_per_hour,
+      modality: formValues.modality,
+    };
+    console.log('Datos a enviar:', dataToSend);
+
+    this.Service.setProfessionalProfile(dataToSend).subscribe({
+      next: (response) => {
+        console.log('Respuesta del servidor:', response);
+        this.userAditionalData = response;
+        this.profileAdicionalForm.patchValue({
+          about_me: response.about_me,
+          fee_per_hour: response.fee_per_hour,
+          modality: response.modality
+        });
+        toast.success('Datos adicionales guardados correctamente');
+      },
+      error: (err) => {
+        console.error('Error al guardar datos adicionales:', err);
+        if (err.error) {
+          console.error('Detalles del error:', err.error);
+        }
+        toast.error('Hubo un problema al guardar los datos adicionales');
+      }
     });
+  }
 
-    switch (type) {
+  // Marcar todos los campos como touched para mostrar errores
+  private markAllAsTouched(): void {
+    if (this.profileForm) {
+      Object.values(this.profileForm.controls).forEach((control) => {
+        control.markAsTouched();
+      });
+    } else if (this.profileAdicionalForm) {
+      Object.values(this.profileAdicionalForm.controls).forEach((control) => {
+        control.markAsTouched();
+      });
+    }
+  }
+
+  // Helper para acceder fácil a los controles del formulario
+  get f() {
+    return this.profileForm.controls;
+  }
+
+  openModal(type: 'languaje' | 'education' | 'skills'): void {
+    switch(type) {
       case 'languaje':
-        this.modalForm.get('language_name')?.setValidators([Validators.required]);
-        this.modalForm.get('language_level')?.setValidators([Validators.required]);
+        const dialogRef = this.dialog.open(ModalLanguajeComponent, {
+          width: '500px',
+          disableClose: true
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.loadLanguages();
+          }
+        });
         break;
       case 'education':
-        this.modalForm.get('institution')?.setValidators([Validators.required]);
-        this.modalForm.get('degree')?.setValidators([Validators.required]);
-        this.modalForm.get('start_date')?.setValidators([Validators.required]);
+        const educationDialogRef = this.dialog.open(ModalEducationComponent, {
+          width: '500px',
+          disableClose: true
+        });
+        educationDialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.loadEducation();
+          }
+        });
         break;
       case 'skills':
-        this.modalForm.get('skill_name')?.setValidators([Validators.required]);
-        this.modalForm.get('skill_level')?.setValidators([Validators.required]);
+        const skillsDialogRef = this.dialog.open(ModalSkillsComponent, {
+          width: '500px',
+          disableClose: true
+        });
+        skillsDialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.loadSkills();
+          }
+        });
         break;
     }
   }
 
-  onModalSubmit(): void {
-    if (this.modalForm.valid) {
-      switch (this.modalType) {
-        case 'languaje':
-          this.addLanguage();
-          break;
-        case 'education':
-          this.addEducation();
-          break;
-        case 'skills':
-          this.addSkill();
-          break;
+  loadLanguages(): void {
+    this.Service.getUserLanguages().subscribe({
+      next: (data: Language[]) => {
+        this.languagesList = data;
+      },
+      error: (error: Error) => {
+        console.error('Error al cargar los idiomas:', error);
+        toast.error('Error al cargar los idiomas');
       }
-    } else {
-      this.markFormGroupTouched(this.modalForm);
-    }
+    });
   }
 
-  addLanguage(): void {
-    if (this.modalForm.valid && this.tutorId) {
-      const languageData = {
-        name: this.modalForm.get('language_name')?.value,
-        level: this.modalForm.get('language_level')?.value
-      };
-
-      this.profileService.addTutorLanguage(this.tutorId, languageData).subscribe({
-        next: (response) => {
-          this.languagesList.push(response);
-          this.closeModal();
-          toast.success('Idioma agregado exitosamente');
-        },
-        error: (error) => {
-          console.error('Error adding language:', error);
-          toast.error('Error al agregar el idioma');
-        }
-      });
-    }
+  loadEducation(): void {
+    this.Service.getUserEducation().subscribe({
+      next: (data: Education[]) => {
+        this.educationList = data;
+      },
+      error: (error: Error) => {
+        console.error('Error al cargar la educación:', error);
+        toast.error('Error al cargar la educación');
+      }
+    });
   }
 
-  addEducation(): void {
-    if (this.modalForm.valid && this.tutorId) {
-      const educationData = {
-        institution: this.modalForm.get('institution')?.value,
-        degree: this.modalForm.get('degree')?.value,
-        field_of_study: this.modalForm.get('field_of_study')?.value,
-        start_date: this.modalForm.get('start_date')?.value,
-        end_date: this.modalForm.get('end_date')?.value,
-        is_current: this.modalForm.get('is_current')?.value,
-        description: this.modalForm.get('description')?.value
-      };
-
-      this.profileService.addTutorEducation(this.tutorId, educationData).subscribe({
-        next: (response) => {
-          this.educationList.push(response);
-          this.closeModal();
-          toast.success('Educación agregada exitosamente');
-        },
-        error: (error) => {
-          console.error('Error adding education:', error);
-          toast.error('Error al agregar la educación');
-        }
-      });
-    }
+  loadSkills(): void {
+    this.Service.getUserSkills().subscribe({
+      next: (data: Skill[]) => {
+        this.skillsList = data;
+      },
+      error: (error: Error) => {
+        console.error('Error al cargar las habilidades:', error);
+        toast.error('Error al cargar las habilidades');
+      }
+    });
   }
 
-  addSkill(): void {
-    if (this.modalForm.valid && this.tutorId) {
-      const skillData = {
-        name: this.modalForm.get('skill_name')?.value,
-        level: this.modalForm.get('skill_level')?.value
-      };
-
-      this.profileService.addTutorSkill(this.tutorId, skillData).subscribe({
-        next: (response) => {
-          this.skillsList.push(response);
-          this.closeModal();
-          toast.success('Habilidad agregada exitosamente');
-        },
-        error: (error) => {
-          console.error('Error adding skill:', error);
-          toast.error('Error al agregar la habilidad');
-        }
-      });
-    }
+  deleteLanguage(id: number): void {
+    this.Service.deleteLanguage(id).subscribe({
+      next: () => {
+        this.languagesList = this.languagesList.filter(lang => lang.id !== id);
+        toast.success('Idioma eliminado correctamente');
+      },
+      error: (error: Error) => {
+        console.error('Error al eliminar el idioma:', error);
+        toast.error('Error al eliminar el idioma');
+      }
+    });
   }
 
-  deleteLanguage(languageId: number): void {
-    if (this.tutorId) {
-      this.profileService.deleteTutorLanguage(this.tutorId, languageId).subscribe({
-        next: () => {
-          this.languagesList = this.languagesList.filter(lang => lang.id !== languageId);
-          toast.success('Idioma eliminado exitosamente');
-        },
-        error: (error) => {
-          console.error('Error deleting language:', error);
-          toast.error('Error al eliminar el idioma');
-        }
-      });
-    }
+  deleteEducation(id: number): void {
+    this.Service.deleteEducation(id).subscribe({
+      next: () => {
+        this.educationList = this.educationList.filter(edu => edu.id !== id);
+        toast.success('Educación eliminada correctamente');
+      },
+      error: (error: Error) => {
+        console.error('Error al eliminar la educación:', error);
+        toast.error('Error al eliminar la educación');
+      }
+    });
   }
 
-  deleteEducation(educationId: number): void {
-    if (this.tutorId) {
-      this.profileService.deleteTutorEducation(this.tutorId, educationId).subscribe({
-        next: () => {
-          this.educationList = this.educationList.filter(edu => edu.id !== educationId);
-          toast.success('Educación eliminada exitosamente');
-        },
-        error: (error) => {
-          console.error('Error deleting education:', error);
-          toast.error('Error al eliminar la educación');
-        }
-      });
-    }
-  }
-
-  deleteSkill(skillId: number): void {
-    if (this.tutorId) {
-      this.profileService.deleteTutorSkill(this.tutorId, skillId).subscribe({
-        next: () => {
-          this.skillsList = this.skillsList.filter(skill => skill.id !== skillId);
-          toast.success('Habilidad eliminada exitosamente');
-        },
-        error: (error) => {
-          console.error('Error deleting skill:', error);
-          toast.error('Error al eliminar la habilidad');
-        }
-      });
-    }
-  }
-
-  private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      control?.markAsTouched({ onlySelf: true });
+  deleteSkill(id: number): void {
+    this.Service.deleteSkill(id).subscribe({
+      next: () => {
+        this.skillsList = this.skillsList.filter(skill => skill.id !== id);
+        toast.success('Habilidad eliminada correctamente');
+      },
+      error: (error: Error) => {
+        console.error('Error al eliminar la habilidad:', error);
+        toast.error('Error al eliminar la habilidad');
+      }
     });
   }
 }

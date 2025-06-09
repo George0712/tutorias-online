@@ -41,14 +41,12 @@ export class HeaderComponent implements OnDestroy {
   }
 
   ngOnInit() {
-    // Inicializar el estado una sola vez
     this.updateAuthState();
 
-    // Suscribirse a cambios en el estado de autenticación
     this.authSubscription = this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       this.authState.next(isLoggedIn);
       this.updateAuthState();
-      this.cdr.markForCheck(); // Usa markForCheck en OnPush
+      this.cdr.detectChanges();
     });
 
     if (this.authService.isAuthenticated()) {
@@ -61,15 +59,15 @@ export class HeaderComponent implements OnDestroy {
     this.isLoggedIn = this.authService.isAuthenticated();
     this.isStudent = this.authService.isStudent();
     this.isTutor = this.authService.isTutor();
+    this.cdr.detectChanges();
   }
 
   private loadProfileImage(): void {
     this.Service.getUserPersonalData().subscribe({
       next: data => {
         this.userPersonalData = data;
-        // Asegurar que usamos el campo correcto de tu API, p.e. 'photo' o 'profile_picture'
         this.photo = this.Service.getImageUrl(data.photo) + '?t=' + new Date().getTime();
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       },
       error: error => {
         console.error('Error al obtener los datos personales:', error);
@@ -84,12 +82,13 @@ export class HeaderComponent implements OnDestroy {
 
   private closeDropdown() {
     this.showDropdown = false;
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
-  toggleDropdown() {
+  toggleDropdown(event: Event) {
+    event.stopPropagation();
     this.showDropdown = !this.showDropdown;
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   toProfile() {

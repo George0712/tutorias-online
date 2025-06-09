@@ -21,9 +21,15 @@ class EducationViewSet(viewsets.ModelViewSet):
         return tutor
 
     def get_queryset(self):
-        if self.action in ['list', 'retrieve']:
-            return Education.objects.all()
-        return Education.objects.filter(tutor=self.get_tutor())
+        queryset = Education.objects.all()
+        tutor_id = self.request.query_params.get('tutor', None)
+        
+        if tutor_id:
+            queryset = queryset.filter(tutor_id=tutor_id)
+        elif self.request.user.is_authenticated:
+            queryset = queryset.filter(tutor=self.get_tutor())
+            
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(tutor=self.get_tutor())

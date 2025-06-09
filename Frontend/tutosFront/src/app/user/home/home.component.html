@@ -116,28 +116,63 @@
   
   <!-- Tutores -->
   <section class="w-full pt-12">
-    <div class="flex justify-between items-center mb-8">
-      <h2 class="text-2xl font-bold">MÁS POPULARES</h2>
-      <span class="text-[#A62639] hover:text-[#8a1f30] transition-colors duration-200 cursor-pointer">Ver Más</span>
+    <!-- Resultados de búsqueda -->
+    <div *ngIf="!loading && hasActiveFilters" class="mb-12">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold">RESULTADOS DE BÚSQUEDA</h2>
+        <div class="flex items-center gap-4">
+          <span *ngIf="filteredTutorsPersonal.length > 0" class="text-gray-600">
+            {{filteredTutorsPersonal.length}} tutores encontrados
+          </span>
+          <button 
+            (click)="clearFilters()"
+            class="text-[#A62639] hover:text-[#8a1f30] transition-colors duration-200"
+          >
+            Limpiar filtros
+          </button>
+        </div>
+      </div>
+
+      <!-- Mensaje de no resultados -->
+      <div *ngIf="filteredTutorsPersonal.length === 0" class="text-center py-12 bg-gray-50 rounded-lg">
+        <p class="text-gray-600">No se encontraron tutores que coincidan con los criterios de búsqueda.</p>
+      </div>
+
+      <!-- Grid de resultados -->
+      <div *ngIf="filteredTutorsPersonal.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <app-card-tutor
+          *ngFor="let tutor of filteredTutorsPersonal; let i = index"
+          [tutorPersonal]="tutor"
+          [tutorProfessional]="filteredTutorsProfessional[i]">
+        </app-card-tutor>
+      </div>
     </div>
 
-    <!-- Estado de carga -->
-    <div *ngIf="loading" class="flex justify-center items-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A62639]"></div>
-    </div>
+    <!-- Tutores recomendados -->
+    <div class="mt-12" *ngIf="!hasActiveFilters || filteredTutorsPersonal.length === 0">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold">TUTORES RECOMENDADOS</h2>
+        <span class="text-[#A62639] hover:text-[#8a1f30] transition-colors duration-200 cursor-pointer">Ver Más</span>
+      </div>
 
-    <!-- Mensaje de no resultados -->
-    <div *ngIf="!loading && tutorsPersonal.length === 0" class="text-center py-12">
-      <p class="text-gray-600">No se encontraron tutores disponibles.</p>
-    </div>
+      <!-- Estado de carga -->
+      <div *ngIf="loading" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A62639]"></div>
+      </div>
 
-    <!-- Grid de tutores -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <app-card-tutor 
-        *ngFor="let tutor of tutorsPersonal; let i = index" 
-        [tutorPersonal]="tutor"
-        [tutorProfessional]="tutorsProfessional[i]">
-      </app-card-tutor>
+      <!-- Mensaje de no resultados -->
+      <div *ngIf="!loading && tutorsPersonal.length === 0" class="text-center py-12">
+        <p class="text-gray-600">No se encontraron tutores disponibles.</p>
+      </div>
+
+      <!-- Grid de tutores -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <app-card-tutor 
+          *ngFor="let tutor of tutorsPersonal; let i = index" 
+          [tutorPersonal]="tutor"
+          [tutorProfessional]="tutorsProfessional[i]">
+        </app-card-tutor>
+      </div>
     </div>
   </section>
 
